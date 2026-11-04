@@ -1,0 +1,121 @@
+{
+  "surfaces": [
+    {
+      "name": "a-tower",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "core",
+        "fonts": {
+          "SF Pro": 25,
+          "SF Mono": 8
+        },
+        "sizes": [
+          104,
+          34,
+          22,
+          20,
+          17,
+          15,
+          13,
+          11
+        ],
+        "weights": [
+          "400",
+          "500",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 4,
+        "words": 94,
+        "headline": "104px, 3 words, 1 line(s)",
+        "accentHues": [
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "b-glaze",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Text inside the system's safe areas: \"iOS development · 14 min\" (home indicator)",
+        "6 different gradients. A crafted gradient has an owner and a role (finish.md §2); this many reads as decoration."
+      ],
+      "facts": {
+        "os": "ios",
+        "kind": "core",
+        "fonts": {
+          "SF Pro": 25
+        },
+        "sizes": [
+          64,
+          40,
+          22,
+          20,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 5,
+        "words": 75,
+        "headline": "64px, 4 words, 1 line(s)",
+        "accentHues": [
+          24,
+          0
+        ],
+        "cards": 1
+      }
+    },
+    {
+      "name": "c-tide",
+      "type": "screen",
+      "fails": [
+        "Text on an image/illustration fails contrast over part of its ground (3.53:1, needs 4.5): \"L\". Add a scrim, move it, or change the ink."
+      ],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "core",
+        "fonts": {
+          "SF Pro Rounded": 15,
+          "SF Mono": 1,
+          "SF Pro": 2
+        },
+        "sizes": [
+          44,
+          20,
+          17,
+          15,
+          13,
+          12
+        ],
+        "weights": [
+          "500",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 4,
+        "words": 57,
+        "headline": "44px, 6 words, 2 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 2
+      }
+    }
+  ],
+  "exports": []
+}

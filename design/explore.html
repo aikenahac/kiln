@@ -1,0 +1,297 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Kiln — exploration</title>
+<link rel="stylesheet" href="file:///Users/aiken/.claude/skills/app-designer-pro/assets/device.css">
+<style>
+  body { background: #d9d9d6; display: flex; gap: 40px; padding: 40px; flex-wrap: wrap; }
+  .screen { overflow: hidden; }
+  svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; display: block; }
+  svg.i.s { width: 17px; height: 17px; }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* shared iOS chrome geometry */
+  .toolbar { position: absolute; top: 62px; left: 16px; right: 16px; height: 44px; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
+  .pill { height: 44px; border-radius: 22px; display: flex; align-items: center; gap: 8px; padding: 0 16px 0 6px; font: 600 15px/1 var(--sf); }
+  .pill .av { width: 32px; height: 32px; border-radius: 16px; display: grid; place-items: center; font: 700 13px/1 var(--sf); }
+  .circ { width: 44px; height: 44px; border-radius: 22px; display: grid; place-items: center; }
+  .tabbar { position: absolute; left: 20px; right: 94px; bottom: 21px; height: 62px; border-radius: 31px; display: flex; align-items: center; padding: 0 4px; z-index: 5; }
+  .tab { flex: 1; height: 54px; border-radius: 27px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font: 500 10px/12px var(--sf); }
+  .searchbtn { position: absolute; right: 20px; bottom: 21px; width: 62px; height: 62px; border-radius: 31px; display: grid; place-items: center; z-index: 5; }
+  .scroll { position: absolute; inset: 0; overflow: hidden; padding: 120px 0 120px; }
+
+  /* ============ A. TOWER (dark) ============ */
+  .d-a { --ground:#0A0B0D; --raised:#15171B; --ink:#F2F1EC; --ink-2:#A9ABB0; --ink-3:#8A8D94; --rule:rgba(242,241,236,.09); --live:#FFB238; --live-ink:#FFC566; --neg:#FF6152;
+    background: var(--ground); color: var(--ink); font-family: var(--sf); --glass-dark: rgba(30,32,36,.62); }
+  .d-a .eyebrow { font: 600 13px/18px var(--sf); color: var(--live-ink); display: flex; align-items: center; gap: 8px; padding: 0 20px; }
+  .d-a .dot { width: 8px; height: 8px; border-radius: 4px; background: var(--live); box-shadow: 0 0 0 4px rgba(255,178,56,.18); }
+  .d-a .hero { padding: 6px 20px 0; }
+  .d-a .clock { font: 800 104px/0.9 var(--sf); font-stretch: 60%; letter-spacing: -2px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .d-a .clock small { font-size: 34px; color: var(--ink-3); letter-spacing: 0; font-weight: 700; margin-left: 6px; }
+  .d-a .what { font: 700 22px/28px var(--sf); margin-top: 10px; letter-spacing: -0.3px; }
+  .d-a .meta { font: 400 15px/20px var(--sf); color: var(--ink-2); margin-top: 2px; }
+  .d-a .lanes { display: flex; gap: 4px; padding: 20px 20px 0; }
+  .d-a .lane { flex: 1; }
+  .d-a .lamp { height: 34px; border-radius: 6px; background: #24272D; }
+  .d-a .lane.done .lamp { background: #3A3D44; }
+  .d-a .lane.now .lamp { background: linear-gradient(180deg,#FFC15A,#F29A1F); box-shadow: inset 0 1px 0 rgba(255,255,255,.45); }
+  .d-a .lane.wait .lamp { background: transparent; box-shadow: inset 0 0 0 1.5px #2C2F35; }
+  .d-a .lane b { display: block; font: 600 11px/13px var(--sf); color: var(--ink-2); margin-top: 8px; }
+  .d-a .lane i { display: block; font: 400 11px/13px var(--sf-mono); font-style: normal; color: var(--ink-2); margin-top: 2px; }
+  .d-a .lane.now b { color: var(--live-ink); }
+  .d-a .commit { margin: 18px 20px 0; font: 400 13px/18px var(--sf); color: var(--ink-2); }
+  .d-a .commit code { font: 500 13px/18px var(--sf-mono); color: var(--ink); }
+  .d-a h3 { font: 700 20px/25px var(--sf); letter-spacing: -0.4px; margin: 40px 20px 12px; }
+  .d-a .row { display: flex; gap: 12px; padding: 12px 20px; align-items: flex-start; position: relative; }
+  .d-a .row + .row::before { content: ""; position: absolute; top: 0; left: 44px; right: 0; height: 0.5px; background: var(--rule); }
+  .d-a .mark { width: 12px; height: 12px; margin-top: 4px; border-radius: 3px; flex: none; }
+  .d-a .mark.neg { background: var(--neg); }
+  .d-a .mark.q { box-shadow: inset 0 0 0 1.5px var(--live); }
+  .d-a .mark.ok { background: #3A3D44; }
+  .d-a .row .t { font: 600 17px/22px var(--sf); letter-spacing: -0.4px; }
+  .d-a .row .s { font: 400 13px/18px var(--sf); color: var(--ink-2); margin-top: 2px; }
+  .d-a .row .err { font: 400 13px/18px var(--sf-mono); color: #FF9A8F; margin-top: 6px; }
+  .d-a .row .r { margin-left: auto; font: 400 13px/22px var(--sf); color: var(--ink-3); white-space: nowrap; }
+  .d-a .tab { color: var(--ink-2); }
+  .d-a .tab.on { color: var(--live-ink); background: rgba(255,255,255,.08); }
+  .d-a .pill .av { background: #2A2D33; color: var(--ink); }
+
+  /* ============ B. GLAZE SHELF (light) ============ */
+  .d-b { --ground:#F5F5F2; --raised:#FFFFFF; --ink:#15171A; --ink-2:#5B5F66; --ink-3:#666A71; --rule:rgba(21,23,26,.08); --neg:#C8321F;
+    --tenmoku-a:#E59A3C; --tenmoku-b:#B8561A; --celadon-a:#8CC7B0; --celadon-b:#3F8C74; --cobalt-a:#5C86EC; --cobalt-b:#2549B0; --plum-a:#CF7BA8; --plum-b:#8E3A69;
+    background: var(--ground); color: var(--ink); font-family: var(--sf); }
+  .d-b .title { font: 800 40px/44px var(--sf); font-stretch: 130%; letter-spacing: -1px; padding: 0 20px; }
+  .d-b .sub { font: 400 15px/20px var(--sf); color: var(--ink-2); padding: 4px 20px 0; }
+  .d-b .kiln { margin: 24px 16px 0; border-radius: 32px; padding: 22px; background: linear-gradient(180deg,#FFFFFF,#FAFAF8);
+    box-shadow: 0 1px 2px rgba(40,34,20,.05), 0 18px 36px -14px rgba(40,34,20,.16), inset 0 0 0 1px rgba(21,23,26,.04); }
+  .d-b .kiln-top { display: flex; gap: 14px; align-items: center; }
+  .d-b .glaze { width: 56px; height: 56px; border-radius: 18px; flex: none; display: grid; place-items: center; color: #fff; font: 800 22px/1 var(--sf); font-stretch: 125%; }
+  .d-b .g-tenmoku { background: radial-gradient(120% 90% at 30% 15%, #F4BE73 0%, transparent 50%), linear-gradient(160deg,var(--tenmoku-a),var(--tenmoku-b)); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 10px 18px -10px rgba(184,86,26,.7); }
+  .d-b .g-celadon { background: radial-gradient(120% 90% at 30% 15%, #B9E2D2 0%, transparent 50%), linear-gradient(160deg,var(--celadon-a),var(--celadon-b)); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 10px 18px -10px rgba(63,140,116,.7); }
+  .d-b .g-cobalt { background: radial-gradient(120% 90% at 30% 15%, #93B0F5 0%, transparent 50%), linear-gradient(160deg,var(--cobalt-a),var(--cobalt-b)); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 10px 18px -10px rgba(37,73,176,.7); }
+  .d-b .g-plum { background: radial-gradient(120% 90% at 30% 15%, #E9AECD 0%, transparent 50%), linear-gradient(160deg,var(--plum-a),var(--plum-b)); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 10px 18px -10px rgba(142,58,105,.7); }
+  .d-b .kiln-name { font: 700 22px/26px var(--sf); font-stretch: 120%; letter-spacing: -0.5px; }
+  .d-b .kiln-meta { font: 400 13px/18px var(--sf); color: var(--ink-2); margin-top: 2px; }
+  .d-b .big { font: 800 64px/1 var(--sf); font-stretch: 118%; letter-spacing: -2.4px; white-space: nowrap; margin-top: 24px; font-variant-numeric: tabular-nums; }
+  .d-b .big span { font-size: 17px; white-space: nowrap; font-stretch: 100%; letter-spacing: -0.3px; color: var(--ink-2); font-weight: 600; margin-left: 4px; }
+  .d-b .phase { font: 600 15px/20px var(--sf); color: var(--tenmoku-b); margin-top: 6px; }
+  .d-b .fill { height: 12px; border-radius: 6px; background: #EFEDE8; margin-top: 16px; overflow: hidden; }
+  .d-b .fill > div { height: 100%; width: 58%; border-radius: 6px; background: linear-gradient(90deg,var(--tenmoku-a),var(--tenmoku-b)); }
+  .d-b .fillcap { display: flex; justify-content: space-between; font: 400 13px/18px var(--sf); color: var(--ink-3); margin-top: 8px; }
+  .d-b .actions { display: flex; gap: 8px; margin-top: 18px; }
+  .d-b .act { height: 40px; padding: 0 16px; border-radius: 20px; background: #F1F0EC; font: 600 15px/40px var(--sf); color: var(--ink); }
+  .d-b h3 { font: 700 20px/25px var(--sf); font-stretch: 115%; letter-spacing: -0.4px; margin: 40px 20px 6px; }
+  .d-b .row { display: flex; gap: 14px; padding: 12px 20px; align-items: center; position: relative; }
+  .d-b .row + .row::before { content: ""; position: absolute; top: 0; left: 78px; right: 0; height: 0.5px; background: var(--rule); }
+  .d-b .row .glaze { width: 44px; height: 44px; border-radius: 14px; font-size: 17px; }
+  .d-b .row .t { font: 600 17px/22px var(--sf); letter-spacing: -0.4px; }
+  .d-b .row .s { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+  .d-b .row .s.neg { color: var(--neg); font-weight: 600; }
+  .d-b .row .r { margin-left: auto; font: 400 13px/18px var(--sf); color: var(--ink-3); white-space: nowrap; align-self: flex-start; margin-top: 2px; }
+  .d-b .crack { width: 44px; height: 44px; position: relative; }
+  .d-b .tab { color: var(--ink-2); }
+  .d-b .tab.on { color: var(--ink); background: rgba(21,23,26,.07); }
+  .d-b .pill .av { color: #fff; background: linear-gradient(160deg,#3C4048,#15171A); }
+
+  /* ============ C. TIDE CHART (colour field) ============ */
+  .d-c { --field:#C2341D; --field-deep:#A42813; --ink:#FFFFFF; --ink-2:rgba(255,255,255,.82); --ink-3:rgba(255,255,255,.66); --sheet:#FFF8F5; --sheet-ink:#2A1410; --sheet-ink-2:#6E4E47; --rule:rgba(42,20,16,.09);
+    background: linear-gradient(180deg,#C83A22 0%,#B92F19 60%,#AE2B16 100%); color: var(--ink); font-family: var(--sf-rounded); --glass: rgba(255,255,255,.22); }
+  .d-c .state { font: 700 15px/20px var(--sf-rounded); color: var(--ink-2); padding: 0 20px; display: flex; gap: 8px; align-items: center; }
+  .d-c .headline { font: 800 44px/46px var(--sf-rounded); letter-spacing: -1.2px; padding: 8px 20px 0; text-wrap: balance; }
+  .d-c .why { margin: 16px 20px 0; font: 500 13px/18px var(--sf-mono); color: #fff; background: rgba(0,0,0,.18); border-radius: 14px; padding: 12px 14px; }
+  .d-c .why b { display: block; font: 700 13px/18px var(--sf-rounded); color: var(--ink-3); margin-bottom: 4px; }
+  .d-c .btns { display: flex; gap: 10px; padding: 16px 20px 0; }
+  .d-c .btn { height: 50px; border-radius: 25px; padding: 0 22px; font: 700 17px/50px var(--sf-rounded); }
+  .d-c .btn.pri { background: #fff; color: #A42813; flex: 1; text-align: center; }
+  .d-c .btn.sec { background: rgba(255,255,255,.2); color: #fff; }
+  .d-c .tide { margin-top: 28px; position: relative; height: 150px; }
+  .d-c .tide svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .d-c .sheet { background: var(--sheet); color: var(--sheet-ink); border-radius: 32px 32px 0 0; padding: 22px 0 120px; margin-top: -2px; }
+  .d-c .sheet h3 { font: 800 20px/25px var(--sf-rounded); letter-spacing: -0.3px; padding: 0 20px 6px; }
+  .d-c .row { display: flex; gap: 12px; padding: 12px 20px; align-items: center; position: relative; }
+  .d-c .row + .row::before { content: ""; position: absolute; top: 0; left: 64px; right: 0; height: 0.5px; background: var(--rule); }
+  .d-c .buoy { width: 32px; height: 32px; border-radius: 16px; flex: none; display: grid; place-items: center; }
+  .d-c .buoy.run { background: #FFE3D9; color: #A42813; }
+  .d-c .buoy.ok { background: #F1E6E2; color: var(--sheet-ink-2); }
+  .d-c .row .t { font: 700 17px/22px var(--sf-rounded); letter-spacing: -0.3px; }
+  .d-c .row .s { font: 500 13px/18px var(--sf-rounded); color: var(--sheet-ink-2); }
+  .d-c .row .r { margin-left: auto; font: 500 13px/18px var(--sf-rounded); color: var(--sheet-ink-2); white-space: nowrap; }
+  .d-c .tab { color: rgba(255,255,255,.85); font-family: var(--sf-rounded); }
+  .d-c .tabbar, .d-c .searchbtn { --glass: rgba(178,44,24,.78); }
+  .d-c .tab.on { color: #fff; background: rgba(255,255,255,.22); }
+  .d-c .pill { color: #fff; }
+  .d-c .pill .av { background: #5E1508; color: #fff; }
+  .d-c .circ { color: #fff; }
+  .d-c .searchbtn { color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- ===================== A. TOWER ===================== -->
+<section class="screen d-a" data-name="a-tower" data-theme="dark" data-kind="core" data-time="14:07">
+  <div class="scroll" data-scrolls>
+    <div class="eyebrow"><span class="dot"></span>Building now · step 5 of 6</div>
+    <div class="hero">
+      <div class="clock tnum">6:12<small>/ ~11 min</small></div>
+      <div class="what" data-proper>Trailhead for iOS</div>
+      <div class="meta">production · 2.4.0 (318) · large-m1</div>
+    </div>
+    <div class="lanes">
+      <div class="lane done"><div class="lamp"></div><b>Queue</b><i>0:41</i></div>
+      <div class="lane done"><div class="lamp"></div><b>Install</b><i>1:58</i></div>
+      <div class="lane done"><div class="lamp"></div><b>Prebuild</b><i>0:37</i></div>
+      <div class="lane done"><div class="lamp"></div><b>Pods</b><i>1:12</i></div>
+      <div class="lane now"><div class="lamp"></div><b>Fastlane</b><i>1:44</i></div>
+      <div class="lane wait"><div class="lamp"></div><b>Upload</b><i>next</i></div>
+    </div>
+    <div class="commit"><code>a3f9c21</code> Fix map tile cache on cold start · maja.k on main</div>
+
+    <h3>Needs a look</h3>
+    <div class="row">
+      <span class="mark neg"></span>
+      <div><div class="t" data-proper>Pocket Ledger for Android</div><div class="s">preview · failed in Run gradlew</div>
+        <div class="err">:app:mergeReleaseResources failed</div></div>
+      <span class="r">22 min</span>
+    </div>
+
+    <h3>Holding</h3>
+    <div class="row">
+      <span class="mark q"></span>
+      <div><div class="t" data-proper>Trailhead for Android</div><div class="s">production · 2nd in queue · about 3 min</div></div>
+      <span class="r">now</span>
+    </div>
+    <div class="row">
+      <span class="mark ok"></span>
+      <div><div class="t">Hotfix: offline banner copy</div><div class="s">Update on production · 25% rollout</div></div>
+      <span class="r">38 min</span>
+    </div>
+    <div class="row">
+      <span class="mark ok"></span>
+      <div><div class="t" data-proper>Fieldnote for iOS</div><div class="s">development · finished in 14 min</div></div>
+      <span class="r">1 h</span>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="pill glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div>
+    <div class="circ glass"><svg class="i" viewBox="0 0 24 24"><path d="M6 15V10a6 6 0 0112 0v5l1.5 2.5h-15z"/><path d="M10 20.5h4"/></svg></div>
+  </div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<!-- ===================== B. GLAZE SHELF ===================== -->
+<section class="screen d-b" data-name="b-glaze" data-kind="core" data-palette="identity" data-time="14:07">
+  <div class="scroll" data-scrolls>
+    <div class="title">Today</div>
+    <div class="sub">1 firing · 1 cracked · 4 fired since 9:00</div>
+
+    <div class="kiln">
+      <div class="kiln-top">
+        <div class="glaze g-tenmoku">T</div>
+        <div><div class="kiln-name">Trailhead</div><div class="kiln-meta">iOS · production · 2.4.0 (318)</div></div>
+      </div>
+      <div class="big tnum">6:12<span>of about 11 min</span></div>
+      <div class="phase">Running fastlane, step 5 of 6</div>
+      <div class="fill"><div></div></div>
+      <div class="fillcap"><span>a3f9c21 · maja.k</span><span>Upload next</span></div>
+      <div class="actions"><span class="act">View logs</span><span class="act">Cancel build</span></div>
+    </div>
+
+    <h3>Cracked</h3>
+    <div class="row">
+      <div class="glaze g-celadon">P</div>
+      <div><div class="t">Pocket Ledger</div><div class="s neg">Android preview failed in Run gradlew</div></div>
+      <span class="r">22 min</span>
+    </div>
+
+    <h3>Out of the kiln</h3>
+    <div class="row">
+      <div class="glaze g-tenmoku">T</div>
+      <div><div class="t">Hotfix: offline banner copy</div><div class="s">Update · production · 25% rollout</div></div>
+      <span class="r">38 min</span>
+    </div>
+    <div class="row">
+      <div class="glaze g-cobalt">F</div>
+      <div><div class="t">Fieldnote</div><div class="s">iOS development · 14 min</div></div>
+      <span class="r">1 h</span>
+    </div>
+    <div class="row">
+      <div class="glaze g-plum">S</div>
+      <div><div class="t">Sprout Kiosk</div><div class="s">Web deploy · sprout-kiosk.expo.app</div></div>
+      <span class="r">2 h</span>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="pill glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div>
+    <div class="circ glass"><svg class="i" viewBox="0 0 24 24"><path d="M6 15V10a6 6 0 0112 0v5l1.5 2.5h-15z"/><path d="M10 20.5h4"/></svg></div>
+  </div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<!-- ===================== C. TIDE CHART ===================== -->
+<section class="screen d-c" data-name="c-tide" data-kind="core" data-chrome="light" data-home="dark" data-time="14:07">
+  <div class="scroll" data-scrolls style="padding-bottom:0">
+    <div class="state"><svg class="i s" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg>Something broke in the last hour</div>
+    <div class="headline">Pocket Ledger failed 22 min ago</div>
+    <div class="why"><b>Android preview · Run gradlew</b>Execution failed for task ':app:mergeReleaseResources'</div>
+    <div class="btns"><span class="btn pri">Open the log</span><span class="btn sec">Retry</span></div>
+
+    <div class="tide">
+      <svg viewBox="0 0 402 150" preserveAspectRatio="none">
+        <path d="M0 112 C 40 108, 60 96, 90 92 S 140 64, 170 70 S 220 98, 250 84 S 300 40, 330 46 S 380 70, 402 60 L402 150 L0 150Z" style="fill: rgba(255,255,255,.14)"/>
+        <path d="M0 126 C 50 122, 80 114, 120 110 S 190 92, 230 100 S 300 78, 340 80 S 390 90, 402 86 L402 150 L0 150Z" style="fill: rgba(255,255,255,.12)"/>
+        <path d="M0 112 C 40 108, 60 96, 90 92 S 140 64, 170 70 S 220 98, 250 84 S 300 40, 330 46 S 380 70, 402 60" style="fill:none; stroke: rgba(255,255,255,.75); stroke-width: 2"/>
+      </svg>
+      <svg viewBox="0 0 402 150" style="overflow:visible">
+        <circle cx="62" cy="99" r="6" style="fill:#fff"/>
+        <circle cx="134" cy="71" r="6" style="fill:#fff"/>
+        <circle cx="206" cy="86" r="6" style="fill:#fff"/>
+        <circle cx="300" cy="46" r="9" style="fill:#fff; stroke:#A42813; stroke-width:3"/>
+        <circle cx="356" cy="56" r="6" style="fill:#fff"/>
+        <circle cx="388" cy="62" r="7" style="fill:#FFD9A8"/>
+      </svg>
+      <div style="position:absolute; left:20px; bottom:14px; font:600 12px/16px var(--sf-rounded); color:rgba(255,255,255,.82)">9:00</div>
+      <div style="position:absolute; right:20px; bottom:14px; font:600 12px/16px var(--sf-rounded); color:rgba(255,255,255,.82)">now</div>
+      <div style="position:absolute; left:236px; top:10px; font:700 12px/16px var(--sf-rounded); color:#fff">13:45 failed</div>
+    </div>
+
+    <div class="sheet">
+      <h3>Also today</h3>
+      <div class="row">
+        <span class="buoy run"><svg class="i s" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/><path d="M12 8v4l2.5 2"/></svg></span>
+        <div><div class="t" data-proper>Trailhead for iOS</div><div class="s">Building · 6:12 of about 11 min</div></div>
+        <span class="r">now</span>
+      </div>
+      <div class="row">
+        <span class="buoy ok"><svg class="i s" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <div><div class="t">Hotfix: offline banner copy</div><div class="s">Update on production · 25%</div></div>
+        <span class="r">38 min</span>
+      </div>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="pill glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div>
+    <div class="circ glass"><svg class="i" viewBox="0 0 24 24"><path d="M6 15V10a6 6 0 0112 0v5l1.5 2.5h-15z"/><path d="M10 20.5h4"/></svg></div>
+  </div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<template id="tabbar">
+  <div class="tabbar glass" data-system data-float>
+    <div class="tab"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12l4-3"/></svg>Now</div>
+    <div class="tab"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="8" width="13" height="12" rx="3"/><path d="M8 5h9a3 3 0 013 3v9"/></svg>Projects</div>
+    <div class="tab"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h2M4 12h2M4 17h2M10 7h10M10 12h10M10 17h10"/></svg>Activity</div>
+    <div class="tab"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18c1.5-2 3.4-3 5.5-3s4 1 5.5 3"/></svg>Account</div>
+  </div>
+  <div class="searchbtn glass" data-system data-float><svg class="i" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg></div>
+</template>
+<script>
+  document.querySelectorAll('.tabslot').forEach(slot => {
+    const frag = document.getElementById('tabbar').content.cloneNode(true);
+    frag.querySelectorAll('.tab')[+slot.dataset.on].classList.add('on');
+    slot.replaceWith(frag);
+  });
+</script>
+<script src="file:///Users/aiken/.claude/skills/app-designer-pro/assets/device.js"></script>
+</body>
+</html>

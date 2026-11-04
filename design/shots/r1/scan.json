@@ -1,0 +1,698 @@
+{
+  "surfaces": [
+    {
+      "name": "now",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "core",
+        "fonts": {
+          "SF Pro": 25,
+          "SF Mono": 8
+        },
+        "sizes": [
+          104,
+          34,
+          22,
+          17,
+          15,
+          13,
+          11
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 4,
+        "words": 89,
+        "headline": "104px, 3 words, 1 line(s)",
+        "accentHues": [
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "now-android",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Frosted glass x1 on an Android screen. Android's navigation layer is tonal surfaces, not Liquid Glass (android.md §3)."
+      ],
+      "facts": {
+        "os": "android",
+        "kind": "core",
+        "fonts": {
+          "Google Sans Flex": 16,
+          "Roboto Flex": 9,
+          "Roboto Mono": 8
+        },
+        "sizes": [
+          104,
+          34,
+          22,
+          16,
+          14,
+          13,
+          12,
+          11
+        ],
+        "weights": [
+          "400",
+          "500",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 4,
+        "words": 88,
+        "headline": "104px, 3 words, 1 line(s)",
+        "accentHues": [
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "now-light",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Three saturated hue families (24°, 48°, 0°). Is each one earning its place?"
+      ],
+      "facts": {
+        "os": "ios",
+        "kind": "core",
+        "fonts": {
+          "SF Pro": 25,
+          "SF Mono": 8
+        },
+        "sizes": [
+          104,
+          34,
+          22,
+          17,
+          15,
+          13,
+          11
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 4,
+        "words": 88,
+        "headline": "104px, 3 words, 1 line(s)",
+        "accentHues": [
+          24,
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "now-light-android",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Three saturated hue families (24°, 48°, 0°). Is each one earning its place?",
+        "Frosted glass x1 on an Android screen. Android's navigation layer is tonal surfaces, not Liquid Glass (android.md §3)."
+      ],
+      "facts": {
+        "os": "android",
+        "kind": "core",
+        "fonts": {
+          "Google Sans Flex": 13,
+          "Roboto Flex": 9,
+          "Roboto Mono": 8
+        },
+        "sizes": [
+          104,
+          34,
+          22,
+          16,
+          14,
+          13,
+          12,
+          11
+        ],
+        "weights": [
+          "400",
+          "500",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 4,
+        "words": 79,
+        "headline": "104px, 3 words, 1 line(s)",
+        "accentHues": [
+          24,
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "build-failed",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Text inside the system's safe areas: \"Waited in queue\" (home indicator); \"0:52\" (home indicator)"
+      ],
+      "facts": {
+        "os": "ios",
+        "kind": "detail",
+        "fonts": {
+          "SF Pro": 20,
+          "SF Mono": 9
+        },
+        "sizes": [
+          34,
+          17,
+          15,
+          13,
+          11
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 3,
+        "words": 58,
+        "headline": "34px, 2 words, 1 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 3
+      }
+    },
+    {
+      "name": "build-failed-android",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Frosted glass x1 on an Android screen. Android's navigation layer is tonal surfaces, not Liquid Glass (android.md §3)."
+      ],
+      "facts": {
+        "os": "android",
+        "kind": "detail",
+        "fonts": {
+          "Google Sans Flex": 10,
+          "Roboto Flex": 6,
+          "Roboto Mono": 9
+        },
+        "sizes": [
+          32,
+          16,
+          14,
+          13,
+          11
+        ],
+        "weights": [
+          "400",
+          "500",
+          "600",
+          "700"
+        ],
+        "leftEdges": 2,
+        "words": 57,
+        "headline": "32px, 2 words, 1 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 1
+      }
+    },
+    {
+      "name": "logs",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Only 3 text sizes across 59 text elements. Hierarchy is flat."
+      ],
+      "facts": {
+        "os": "ios",
+        "kind": "detail",
+        "fonts": {
+          "SF Pro": 6,
+          "SF Mono": 53
+        },
+        "sizes": [
+          17,
+          15,
+          12
+        ],
+        "weights": [
+          "400",
+          "600"
+        ],
+        "leftEdges": 5,
+        "words": 125,
+        "headline": "17px, 2 words, 1 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "signature-1",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "state",
+        "fonts": {
+          "SF Pro": 18,
+          "SF Mono": 7
+        },
+        "sizes": [
+          104,
+          34,
+          22,
+          17,
+          15,
+          13,
+          11
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 4,
+        "words": 62,
+        "headline": "104px, 3 words, 1 line(s)",
+        "accentHues": [
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "signature-2",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Empty words: \"submit\". Replace each with the fact it stands for."
+      ],
+      "facts": {
+        "os": "ios",
+        "kind": "state",
+        "fonts": {
+          "SF Pro": 20,
+          "SF Mono": 6
+        },
+        "sizes": [
+          104,
+          34,
+          22,
+          17,
+          15,
+          13,
+          11
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 4,
+        "words": 67,
+        "headline": "104px, 1 words, 1 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "builds",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "list",
+        "fonts": {
+          "SF Pro": 30
+        },
+        "sizes": [
+          34,
+          22,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 3,
+        "words": 76,
+        "headline": "34px, 1 words, 1 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "builds-android",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Frosted glass x1 on an Android screen. Android's navigation layer is tonal surfaces, not Liquid Glass (android.md §3)."
+      ],
+      "facts": {
+        "os": "android",
+        "kind": "list",
+        "fonts": {
+          "Roboto Flex": 1,
+          "Google Sans Flex": 26
+        },
+        "sizes": [
+          32,
+          16,
+          14,
+          13,
+          12
+        ],
+        "weights": [
+          "400",
+          "500",
+          "600",
+          "700"
+        ],
+        "leftEdges": 3,
+        "words": 67,
+        "headline": "32px, 1 words, 1 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "project",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "detail",
+        "fonts": {
+          "SF Pro": 22
+        },
+        "sizes": [
+          34,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 3,
+        "words": 49,
+        "headline": "34px, 1 words, 1 line(s)",
+        "accentHues": [
+          48
+        ],
+        "cards": 2
+      }
+    },
+    {
+      "name": "channels",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "detail",
+        "fonts": {
+          "SF Pro": 19
+        },
+        "sizes": [
+          34,
+          22,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 2,
+        "words": 27,
+        "headline": "34px, 1 words, 1 line(s)",
+        "accentHues": [
+          48
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "rollout-confirm",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Only 3 text sizes across 19 text elements. Hierarchy is flat."
+      ],
+      "facts": {
+        "os": "ios",
+        "kind": "state",
+        "fonts": {
+          "SF Pro": 19
+        },
+        "sizes": [
+          28,
+          17,
+          15
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 5,
+        "words": 47,
+        "headline": "28px, 5 words, 1 line(s)",
+        "accentHues": [
+          48
+        ],
+        "cards": 2
+      }
+    },
+    {
+      "name": "accounts",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "state",
+        "fonts": {
+          "SF Pro": 12
+        },
+        "sizes": [
+          28,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 2,
+        "words": 37,
+        "headline": "28px, 1 words, 1 line(s)",
+        "accentHues": [],
+        "cards": 1
+      }
+    },
+    {
+      "name": "sign-in",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "onboarding",
+        "fonts": {
+          "SF Pro": 5,
+          "SF Mono": 1
+        },
+        "sizes": [
+          56,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "800"
+        ],
+        "leftEdges": 2,
+        "words": 26,
+        "headline": "56px, 5 words, 2 line(s)",
+        "textCoverage": 0.12,
+        "cta": "\"Check token\" 50pt",
+        "accentHues": [],
+        "cards": 0
+      }
+    },
+    {
+      "name": "sign-in-checking",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "No primary button found on the onboarding. Mark it data-cta."
+      ],
+      "facts": {
+        "os": "ios",
+        "kind": "onboarding",
+        "fonts": {
+          "SF Pro": 5
+        },
+        "sizes": [
+          56,
+          17
+        ],
+        "weights": [
+          "400",
+          "800"
+        ],
+        "leftEdges": 1,
+        "words": 15,
+        "headline": "56px, 3 words, 2 line(s)",
+        "textCoverage": 0.09,
+        "accentHues": [
+          48
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "activity",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "list",
+        "fonts": {
+          "SF Pro": 34
+        },
+        "sizes": [
+          34,
+          22,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 4,
+        "words": 82,
+        "headline": "34px, 1 words, 1 line(s)",
+        "accentHues": [
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "settings",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "settings",
+        "fonts": {
+          "SF Pro": 22
+        },
+        "sizes": [
+          34,
+          22,
+          17,
+          13
+        ],
+        "weights": [
+          "400",
+          "700"
+        ],
+        "leftEdges": 2,
+        "words": 64,
+        "headline": "34px, 1 words, 1 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 3
+      }
+    },
+    {
+      "name": "now-empty",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "empty",
+        "fonts": {
+          "SF Pro": 16
+        },
+        "sizes": [
+          56,
+          22,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ],
+        "leftEdges": 3,
+        "words": 47,
+        "headline": "56px, 2 words, 1 line(s)",
+        "accentHues": [
+          0
+        ],
+        "cards": 0
+      }
+    }
+  ],
+  "exports": []
+}

@@ -1,0 +1,69 @@
+{
+  "surfaces": [
+    {
+      "name": "activity",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "list",
+        "fonts": {
+          "SF Pro": 31
+        },
+        "sizes": [
+          34,
+          22,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 4,
+        "words": 82,
+        "headline": "34px, 1 words, 1 line(s)",
+        "accentHues": [
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "activity-filtered",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "list",
+        "fonts": {
+          "SF Pro": 6
+        },
+        "sizes": [
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 1,
+        "words": 48,
+        "headline": "17px, 1 words, 1 line(s)",
+        "accentHues": [
+          0,
+          48
+        ],
+        "cards": 1
+      }
+    }
+  ],
+  "exports": []
+}

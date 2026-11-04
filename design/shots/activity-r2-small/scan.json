@@ -1,0 +1,71 @@
+{
+  "surfaces": [
+    {
+      "name": "activity",
+      "type": "screen",
+      "fails": [],
+      "warns": [
+        "Text inside the system's safe areas: \"Mon 2 Nov\" (home indicator)"
+      ],
+      "facts": {
+        "os": "ios",
+        "kind": "list",
+        "fonts": {
+          "SF Pro": 23
+        },
+        "sizes": [
+          34,
+          22,
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 5,
+        "words": 58,
+        "headline": "34px, 1 words, 1 line(s)",
+        "accentHues": [
+          48,
+          0
+        ],
+        "cards": 0
+      }
+    },
+    {
+      "name": "activity-filtered",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "list",
+        "fonts": {
+          "SF Pro": 6
+        },
+        "sizes": [
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 2,
+        "words": 47,
+        "headline": "17px, 1 words, 1 line(s)",
+        "accentHues": [
+          0,
+          48
+        ],
+        "cards": 1
+      }
+    }
+  ],
+  "exports": []
+}

@@ -1,0 +1,36 @@
+{
+  "surfaces": [
+    {
+      "name": "activity-filtered",
+      "type": "screen",
+      "fails": [],
+      "warns": [],
+      "facts": {
+        "os": "ios",
+        "kind": "list",
+        "fonts": {
+          "SF Pro": 6
+        },
+        "sizes": [
+          17,
+          15,
+          13
+        ],
+        "weights": [
+          "400",
+          "600",
+          "700"
+        ],
+        "leftEdges": 2,
+        "words": 47,
+        "headline": "17px, 1 words, 1 line(s)",
+        "accentHues": [
+          0,
+          48
+        ],
+        "cards": 1
+      }
+    }
+  ],
+  "exports": []
+}

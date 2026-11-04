@@ -1,0 +1,1072 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Kiln — screens</title>
+<link rel="stylesheet" href="file:///Users/aiken/.claude/skills/app-designer-pro/assets/device.css">
+<style>
+  body { background: #cfd0cc; display: flex; gap: 40px; padding: 40px; flex-wrap: wrap; align-items: flex-start; }
+
+  /* ---------- tokens: light on :root, dark on data-theme ---------- */
+  :root {
+    --ground:#F3F3F0; --raised:#FFFFFF; --raised-2:#ECECE8; --ink:#111214; --ink-2:#53565C; --ink-3:#666A71; --rule:rgba(17,18,20,.09);
+    --lamp-off:#E2E2DE; --lamp-done:#C9CAC5; --live:#F5A524; --live-ink:#875A00; --alarm:#D23A2A; --alarm-ink:#B92A1C; --on-live:#1A1205;
+    --err-bg: rgba(210,58,42,.08); --scrim: rgba(17,18,20,.28);
+    --tile-a:#FFFFFF; --tile-b:#E6E6E1; --tile2-a:#E9E9E4; --tile2-b:#D7D7D1; --tile3-a:#D9D9D3; --tile3-b:#C4C5BF; --tile-rim: rgba(17,18,20,.1);
+  }
+  .screen[data-theme="dark"] {
+    --ground:#0A0B0D; --raised:#15171B; --raised-2:#1E2025; --ink:#F2F1EC; --ink-2:#A9ABB0; --ink-3:#8A8D94; --rule:rgba(242,241,236,.09);
+    --lamp-off:#24272D; --lamp-done:#3A3D44; --live:#FFB238; --live-ink:#FFC566; --alarm:#FF6152; --alarm-ink:#FF9A8F;
+    --err-bg: rgba(255,97,82,.10); --scrim: rgba(0,0,0,.55); --glass-dark: rgba(34,36,41,.6);
+    --tile-a:#3A3D44; --tile-b:#26292F; --tile2-a:#4A4D55; --tile2-b:#33363C; --tile3-a:#2C2F35; --tile3-b:#1C1E22; --tile-rim: rgba(255,255,255,.08);
+    color: var(--ink);
+  }
+  .screen { background: var(--ground); color: var(--ink); font-family: var(--sf); overflow: hidden; }
+  .screen[data-os="android"] { font-family: var(--gsf); }
+  .tnum { font-variant-numeric: tabular-nums; }
+  .mono { font-family: var(--sf-mono); }
+  .screen[data-os="android"] .mono { font-family: "Roboto Mono", var(--sf-mono); }
+  svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; display: block; flex: none; }
+  svg.i.s { width: 17px; height: 17px; }
+  svg.i.xs { width: 14px; height: 14px; stroke-width: 2; }
+
+  .scroll { position: absolute; inset: 0; overflow: hidden; padding: 116px 0 120px; }
+  .screen[data-os="android"] .scroll { padding: 112px 0 110px; }
+
+  /* ---------- type ---------- */
+  .clock { white-space: nowrap; font: 800 104px/0.9 var(--sf); font-stretch: 60%; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+  .clock small { font-size: 34px; color: var(--ink-3); letter-spacing: 0; font-weight: 700; margin-left: 6px; }
+  .display { font: 800 56px/1 var(--sf); font-stretch: 60%; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+  .screen[data-os="android"] .clock, .screen[data-os="android"] .display { font-family: var(--roboto); font-stretch: 25%; font-variation-settings: "wdth" 25; }
+  .title { font: 700 34px/41px var(--sf); letter-spacing: 0.2px; padding: 0 20px; }
+  .screen[data-os="android"] .title { font: 700 32px/40px var(--roboto); letter-spacing: -0.2px; padding: 0 16px; }
+  .head { font: 700 22px/28px var(--sf); letter-spacing: -0.3px; }
+  .screen[data-os="android"] .head { font-family: var(--roboto); }
+  .eyebrow { font: 600 13px/18px var(--sf); display: flex; align-items: center; gap: 8px; }
+  .eyebrow.live { color: var(--live-ink); } .eyebrow.alarm { color: var(--alarm-ink); }
+  .dot { width: 8px; height: 8px; border-radius: 4px; background: var(--live); box-shadow: 0 0 0 4px color-mix(in srgb, var(--live) 22%, transparent); flex: none; }
+  .dot.alarm { background: var(--alarm); box-shadow: 0 0 0 4px color-mix(in srgb, var(--alarm) 22%, transparent); }
+  .meta { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+  .screen[data-os="android"] .meta { font: 400 14px/20px var(--gsf); }
+  h3.sec { font: 700 22px/28px var(--sf); letter-spacing: -0.3px; margin: 40px 20px 8px; }
+  .screen[data-os="android"] h3.sec { font: 600 16px/24px var(--gsf); margin: 32px 16px 4px; color: var(--ink-2); letter-spacing: 0.1px; }
+  .pad { padding: 0 20px; } .screen[data-os="android"] .pad { padding: 0 16px; }
+
+  /* ---------- lamps: the richness source ---------- */
+  .lamps { display: flex; gap: 4px; }
+  .lamps > div { flex: 1; min-width: 0; }
+  .lamp { height: 34px; border-radius: 6px; background: var(--lamp-done); box-shadow: inset 0 1px 0 rgba(255,255,255,.12); }
+  .off .lamp { background: transparent; box-shadow: inset 0 0 0 1.5px var(--lamp-off); }
+  .live .lamp { background: linear-gradient(180deg, color-mix(in srgb, var(--live) 80%, #fff), var(--live)); box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 10px 18px -8px color-mix(in srgb, var(--live) 75%, transparent); }
+  .fail .lamp { background: linear-gradient(180deg, color-mix(in srgb, var(--alarm) 82%, #fff), var(--alarm)); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 10px 18px -8px color-mix(in srgb, var(--alarm) 75%, transparent); }
+  .flash .lamp { background: linear-gradient(180deg, #FFFFFF, #E9E8E2); box-shadow: inset 0 1px 0 #fff; }
+  .lamps b { display: block; font: 600 11px/13px var(--sf); color: var(--ink-2); margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+  .lamps i { display: block; font: 400 11px/13px var(--sf-mono); font-style: normal; color: var(--ink-2); margin-top: 2px; }
+  .screen[data-os="android"] .lamps b { font-family: var(--roboto); }
+  .screen[data-os="android"] .lamps i { font-family: "Roboto Mono", monospace; }
+  .live b { color: var(--live-ink); } .fail b { color: var(--alarm-ink); }
+  .ml { display: flex; gap: 2px; width: 60px; margin-left: auto; margin-top: 8px; }
+  .ml i { flex: 1; height: 6px; border-radius: 2px; background: var(--lamp-done); box-shadow: inset 0 1px 0 rgba(255,255,255,.14); }
+  .ml i.o { background: transparent; box-shadow: inset 0 0 0 1px var(--lamp-off); }
+  .ml i.l { background: var(--live); box-shadow: 0 2px 4px -1px color-mix(in srgb, var(--live) 70%, transparent); } .ml i.f { background: var(--alarm); box-shadow: 0 2px 4px -1px color-mix(in srgb, var(--alarm) 70%, transparent); }
+
+  /* ---------- rows ---------- */
+  .row { display: flex; gap: 12px; padding: 12px 20px; align-items: flex-start; position: relative; }
+  .row + .row::before { content: ""; position: absolute; top: 0; left: 44px; right: 0; height: 0.5px; background: var(--rule); }
+  .screen[data-os="android"] .row { padding: 12px 16px; min-height: 72px; box-sizing: border-box; }
+  .screen[data-os="android"] .row + .row::before { display: none; }
+  .mk { width: 12px; height: 12px; margin-top: 5px; border-radius: 3px; flex: none; background: var(--lamp-done); }
+  .mk.f { background: var(--alarm); } .mk.q { background: transparent; box-shadow: inset 0 0 0 1.5px var(--live); } .mk.l { background: var(--live); }
+  .mk.c { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+  .row .t { font: 600 17px/22px var(--sf); letter-spacing: -0.4px; }
+  .row .s { font: 400 13px/18px var(--sf); color: var(--ink-2); margin-top: 2px; }
+  .screen[data-os="android"] .row .t { font: 500 16px/24px var(--gsf); letter-spacing: 0; }
+  .screen[data-os="android"] .row .s { font: 400 14px/20px var(--gsf); margin-top: 0; }
+  .row .err { font: 400 13px/18px var(--sf-mono); color: var(--alarm-ink); margin-top: 6px; }
+  .row .r { margin-left: auto; text-align: right; font: 400 13px/22px var(--sf); color: var(--ink-3); white-space: nowrap; flex: none; }
+  .row .body { min-width: 0; flex: 1; }
+  .screen[data-os="android"] .row .r { font: 400 12px/24px var(--gsf); }
+  .screen[data-os="android"] .eyebrow { font-family: var(--gsf); }
+  .row .chev { color: var(--ink-3); margin-top: 3px; }
+
+  /* grouped list (iOS) */
+  .group { margin: 0 16px; background: var(--raised); border-radius: 26px; overflow: hidden; }
+  .group .row { padding: 14px 16px; align-items: center; }
+  .group .row + .row::before { left: 16px; }
+  .group .row .t { font-weight: 400; }
+  .group .row .v { margin-left: auto; font: 400 17px/22px var(--sf); color: var(--ink-2); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .group .row .v.live { color: var(--live-ink); }
+  .screen[data-os="android"] .group { margin: 0 16px; border-radius: 16px; }
+  .glabel { font: 400 13px/18px var(--sf); color: var(--ink-2); padding: 0 36px 8px; margin-top: 32px; }
+
+  /* buttons */
+  .btns { display: flex; gap: 10px; }
+  .btn { height: 50px; border-radius: 25px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 600 17px/1 var(--sf); white-space: nowrap; }
+  .btn.pri { background: var(--ink); color: var(--ground); }
+  .btn.sec { background: var(--raised-2); color: var(--ink); }
+  .btn.danger { background: var(--err-bg); color: var(--alarm-ink); }
+  .btn.sm { height: 40px; border-radius: 20px; padding: 0 16px; font-size: 15px; }
+  .screen[data-os="android"] .btn { font: 500 16px/1 var(--gsf); height: 56px; border-radius: 28px; }
+  .screen[data-os="android"] .btn.sm { height: 40px; font-size: 14px; }
+
+  .codebox { background: var(--err-bg); border-radius: 16px; padding: 14px 16px; font: 400 13px/19px var(--sf-mono); color: var(--ink); }
+  .codebox .k { color: var(--alarm-ink); }
+
+  /* ---------- iOS chrome ---------- */
+  .tb { position: absolute; top: 62px; left: 16px; right: 16px; height: 44px; display: flex; align-items: center; gap: 8px; z-index: 6; }
+  .tb .sp { flex: 1; }
+  .gc { width: 44px; height: 44px; border-radius: 22px; display: grid; place-items: center; flex: none; }
+  .gp { height: 44px; border-radius: 22px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 6px; font: 600 15px/1 var(--sf); }
+  .gp.icons { padding: 0 4px; gap: 0; } .gp.icons > span { width: 40px; height: 44px; display: grid; place-items: center; }
+  .av { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; font: 700 13px/1 var(--sf); background: linear-gradient(180deg, var(--tile-a), var(--tile-b)); box-shadow: inset 0 0 0 1px var(--tile-rim); color: var(--ink); flex: none; }
+  .av.t2 { --tile-a: var(--tile2-a); --tile-b: var(--tile2-b); } .av.t3 { --tile-a: var(--tile3-a); --tile-b: var(--tile3-b); }
+  .tb-title { position: absolute; left: 0; right: 0; text-align: center; font: 600 17px/44px var(--sf); pointer-events: none; }
+  .fade-top { position: absolute; top: 0; left: 0; right: 0; height: 120px; background: linear-gradient(180deg, var(--ground) 45%, transparent); z-index: 4; }
+  .tabbar { position: absolute; left: 20px; right: 94px; bottom: 21px; height: 62px; border-radius: 31px; display: flex; align-items: center; padding: 0 4px; z-index: 6; }
+  .tab { flex: 1; height: 54px; border-radius: 27px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font: 500 10px/12px var(--sf); color: var(--ink-2); }
+  .tab.on { color: var(--ink); background: color-mix(in srgb, var(--ink) 9%, transparent); }
+  .tab.on svg { stroke-width: 2.2; }
+  .searchbtn { position: absolute; right: 20px; bottom: 21px; width: 62px; height: 62px; border-radius: 31px; display: grid; place-items: center; z-index: 6; }
+  .tab .badge { position: absolute; }
+
+  /* ---------- Android chrome ---------- */
+  .atb { position: absolute; top: 48px; left: 0; right: 0; height: 64px; display: flex; align-items: center; padding: 0 4px; gap: 0; z-index: 6; background: color-mix(in srgb, var(--ground) 80%, transparent); backdrop-filter: blur(20px); }
+  .atb .ib { width: 48px; height: 48px; border-radius: 24px; display: grid; place-items: center; color: var(--ink); }
+  .atb .ttl { font: 500 22px/28px var(--roboto); flex: 1; padding-left: 4px; }
+  .atb .sp { flex: 1; }
+  .achip { height: 40px; border-radius: 20px; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 4px; margin-left: 8px; background: var(--raised-2); font: 500 14px/1 var(--gsf); }
+  .achip .av { width: 32px; height: 32px; font: 700 13px/1 var(--gsf); }
+  .anav { position: absolute; left: 0; right: 0; bottom: 0; height: 88px; padding-bottom: 24px; box-sizing: border-box; display: flex; z-index: 6;
+          background: color-mix(in srgb, var(--raised) 74%, transparent); backdrop-filter: blur(24px) saturate(140%); box-shadow: inset 0 0.5px 0 var(--rule); }
+  .anav .it { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font: 500 12px/16px var(--gsf); color: var(--ink-2); }
+  .anav .ind { width: 56px; height: 32px; border-radius: 16px; display: grid; place-items: center; }
+  .anav .it.on { color: var(--ink); } .anav .it.on .ind { background: color-mix(in srgb, var(--ink) 14%, transparent); }
+  .ms { font-size: 24px; }
+  .efab { position: absolute; right: 16px; bottom: 104px; height: 56px; border-radius: 16px; padding: 0 20px 0 16px; display: flex; align-items: center; gap: 12px; z-index: 7;
+          background: var(--ink); color: var(--ground); font: 500 16px/1 var(--gsf); box-shadow: 0 3px 6px rgba(0,0,0,.25), 0 8px 24px -6px rgba(0,0,0,.35); }
+  .mchips { display: flex; gap: 8px; padding: 0 16px; overflow: hidden; }
+  .mchip { height: 32px; border-radius: 8px; padding: 0 12px; display: flex; align-items: center; gap: 6px; font: 500 14px/1 var(--gsf); box-shadow: inset 0 0 0 1px var(--lamp-off); color: var(--ink); white-space: nowrap; flex: none; }
+  .mchip.on { background: var(--raised-2); box-shadow: none; }
+
+  /* chips (iOS) */
+  .chips, .mchips { -webkit-mask-image: linear-gradient(90deg,#000 82%,transparent); mask-image: linear-gradient(90deg,#000 82%,transparent); }
+  .chips { display: flex; gap: 8px; padding: 0 20px; overflow: hidden; }
+  .chip { height: 36px; border-radius: 18px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font: 600 15px/1 var(--sf); background: var(--raised-2); color: var(--ink); white-space: nowrap; flex: none; }
+  .chip.on { background: var(--ink); color: var(--ground); }
+  .chip svg { width: 14px; height: 14px; }
+  /* filter row (Activity): menu pills + icon filters, one line */
+  .frow { display: flex; align-items: center; gap: 6px; padding: 0 20px; }
+  .frow .sp { flex: 1; }
+  .fp { flex: none; height: 44px; border-radius: 22px; padding: 0 10px 0 14px; display: flex; align-items: center; gap: 4px; font: 600 15px/1 var(--sf); background: var(--raised-2); color: var(--ink); white-space: nowrap; min-width: 0; }
+  .fp > b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+  .fp.shrink { flex: 0 1 auto; }
+  .fp svg { width: 12px; height: 12px; flex: none; stroke: var(--ink-3); }
+  .fp.on { background: var(--ink); color: var(--ground); }
+  .fp.on svg { stroke: var(--ground); }
+  .fi { height: 44px; min-width: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--raised-2); flex: none; font: 600 15px/1 var(--sf); }
+  .fi svg { width: 18px; height: 18px; stroke: var(--ink-2); fill: none; stroke-width: 1.8; }
+  .fi.alarm { padding: 0 14px 0 12px; box-shadow: inset 0 0 0 1.5px var(--alarm); color: var(--alarm-ink); }
+  .fi.alarm svg { stroke: none; fill: var(--alarm); }
+  .menu { position: absolute; right: 20px; width: 236px; border-radius: 22px; background: rgba(44,46,52,.92); -webkit-backdrop-filter: blur(30px); backdrop-filter: blur(30px); box-shadow: 0 18px 50px rgba(0,0,0,.55); padding: 6px 0; z-index: 5; }
+  .menu div { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 16px; font: 400 17px/1 var(--sf); color: var(--ink); }
+  .menu div + div { box-shadow: inset 0 .5px 0 rgba(255,255,255,.08); }
+  .menu .ck { width: 16px; font-weight: 600; }
+  .menu .ic { margin-left: auto; width: 18px; height: 18px; }
+  .menu .ic svg { width: 18px; height: 18px; }
+  .scrim { position: absolute; inset: 0; background: rgba(0,0,0,.25); z-index: 4; }
+
+  /* sheet (iOS) */
+  .dim { position: absolute; inset: 0; background: var(--scrim); z-index: 8; }
+  .sheet { position: absolute; left: 8px; right: 8px; bottom: 8px; border-radius: 38px; z-index: 9; padding: 10px 20px 22px; background: var(--raised); box-shadow: 0 -10px 40px rgba(0,0,0,.35); }
+  .grab { width: 36px; height: 5px; border-radius: 3px; background: var(--lamp-off); margin: 0 auto 18px; }
+  .scope { display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; font: 400 15px/20px var(--sf); background: var(--raised-2); border-radius: 18px; padding: 16px; }
+  .scope dt { color: var(--ink-2); } .scope dd { margin: 0; font-weight: 600; text-align: right; }
+  .seg { display: flex; background: var(--raised-2); border-radius: 18px; padding: 3px; }
+  .seg span { flex: 1; text-align: center; font: 600 15px/34px var(--sf); border-radius: 15px; color: var(--ink-2); }
+  .seg span.on { background: var(--ink); color: var(--ground); }
+
+  /* split bar (rollout) */
+  .split { display: flex; gap: 4px; height: 34px; }
+  .split > div { border-radius: 6px; }
+
+  /* log */
+  .log { font: 400 12px/18px var(--sf-mono); }
+  .log .ln { display: flex; gap: 12px; padding: 0 20px; }
+  .log .ln .n { color: var(--ink-3); width: 30px; text-align: right; flex: none; }
+  .log .ln .x { color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
+  .log .ln.e { background: var(--err-bg); }
+  .log .ln.e .x { color: var(--alarm-ink); }
+  .log mark { background: color-mix(in srgb, var(--live) 55%, transparent); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .field { height: 44px; border-radius: 22px; background: var(--raised-2); display: flex; align-items: center; gap: 8px; padding: 0 14px; font: 400 17px/1 var(--sf); color: var(--ink-3); }
+
+  /* icons */
+  .app-icon { background: linear-gradient(180deg, #17191D, #08090A); }
+  .app-icon .mark { position: absolute; left: 62px; right: 62px; top: 130px; height: 84px; display: flex; gap: 16px; }
+  .app-icon .mark i { flex: 1; border-radius: 18px; background: linear-gradient(180deg,#4A4D55,#33363C); box-shadow: inset 0 2px 0 rgba(255,255,255,.12); }
+  .app-icon .mark i.l { background: linear-gradient(180deg,#FFCB70,#F29A1F); box-shadow: inset 0 3px 0 rgba(255,255,255,.5), 0 18px 30px -16px rgba(242,154,31,.7); }
+  .app-icon[data-mode="dark"] { background: #000; }
+  .app-icon[data-mode="tinted"] { background: #111; }
+  .app-icon[data-mode="tinted"] .mark i { background: #5a5a5a; box-shadow: none; }
+  .app-icon[data-mode="tinted"] .mark i.l { background: #d8d8d8; box-shadow: none; }
+  .adaptive-icon .layer-bg { background: linear-gradient(180deg, #17191D, #08090A); }
+  .adaptive-icon .layer-fg, .adaptive-icon .layer-mono { display: grid; place-items: center; }
+  .adaptive-icon .m { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 204px; height: 60px; display: flex; gap: 10px; }
+  .adaptive-icon .m i { flex: 1; border-radius: 12px; background: #3E4148; }
+  .adaptive-icon .m i.l { background: linear-gradient(180deg,#FFCB70,#F29A1F); }
+  .adaptive-icon .layer-mono .m i { background: currentColor; opacity: .45; }
+  .adaptive-icon .layer-mono .m i.l { opacity: 1; }
+
+  /* small phones: drop the least important */
+  @container (max-height: 760px) {
+    .screen .drop-small { display: none; }
+  }
+  @container (max-width: 380px) {
+    .screen .clock small { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     1. NOW — core, dark (iOS)
+     ============================================================ -->
+<section class="screen" data-name="now" data-theme="dark" data-kind="core" data-pair="core" data-time="14:07">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow live"><span class="dot"></span>Building now · step 5 of 6</div></div>
+    <div class="pad" style="margin-top:6px">
+      <div class="clock">6:12<small>/ ~11 min</small></div>
+      <div class="head" style="margin-top:10px" data-proper>Trailhead for iOS</div>
+      <div class="meta" style="font-size:15px;line-height:20px;margin-top:2px">production · 2.4.0 (318) · runtime 2.4.0</div>
+    </div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:41</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:58</i></div>
+      <div><div class="lamp"></div><b>Prebuild</b><i>0:37</i></div>
+      <div><div class="lamp"></div><b>Pods</b><i>1:12</i></div>
+      <div class="live"><div class="lamp"></div><b>Fastlane</b><i>1:44</i></div>
+      <div class="off"><div class="lamp"></div><b>Upload</b><i>next</i></div>
+    </div>
+    <div class="pad meta" style="margin-top:16px"><span class="mono" style="color:var(--ink)">a3f9c21</span> Fix map tile cache on cold start · maja.k on main</div>
+
+    <h3 class="sec">Needs a look</h3>
+    <div class="row">
+      <span class="mk f"></span>
+      <div class="body"><div class="t" data-proper>Pocket Ledger for Android</div><div class="s">preview · failed in Run gradlew after 4:31</div>
+        <div class="err">resource color/brand_ink not found</div></div>
+      <span class="r">22 min</span>
+    </div>
+
+    <h3 class="sec">Also running</h3>
+    <div class="row">
+      <span class="mk q"></span>
+      <div class="body"><div class="t" data-proper>Trailhead for Android</div><div class="s">production · 2nd in queue · about 3 min</div></div>
+      <span class="r">now</span>
+    </div>
+    <div class="row">
+      <span class="mk l"></span>
+      <div class="body"><div class="t">deploy-production #142</div><div class="s">Workflow · 3 of 5 jobs</div></div>
+      <span class="r">9 min</span>
+    </div>
+
+    <h3 class="sec drop-small">Recent</h3>
+    <div class="row drop-small">
+      <span class="mk"></span>
+      <div class="body"><div class="t" data-ugc>Hotfix: offline banner copy</div><div class="s">Update on production · 25% rollout</div></div>
+      <span class="r">38 min</span>
+    </div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb">
+    <div class="gp glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div>
+    <div class="sp"></div>
+    <div class="gc glass"><svg class="i" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0113.7-5.6L20 8.7M20 4v4.7h-4.7"/><path d="M20 12a8 8 0 01-13.7 5.6L4 15.3M4 20v-4.7h4.7"/></svg></div>
+  </div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<!-- ============================================================
+     1a. NOW — Android pair
+     ============================================================ -->
+<section class="screen" data-name="now-android" data-os="android" data-theme="dark" data-kind="core" data-pair="core" data-time="14:07">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow live" style="font-family:var(--gsf);font-size:14px">
+      <span class="dot"></span>Building now · step 5 of 6</div></div>
+    <div class="pad" style="margin-top:6px">
+      <div class="clock">6:12<small>/ ~11 min</small></div>
+      <div class="head" style="margin-top:10px" data-proper>Trailhead for iOS</div>
+      <div class="meta" style="margin-top:2px">production · 2.4.0 (318) · runtime 2.4.0</div>
+    </div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:41</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:58</i></div>
+      <div><div class="lamp"></div><b>Prebuild</b><i>0:37</i></div>
+      <div><div class="lamp"></div><b>Pods</b><i>1:12</i></div>
+      <div class="live"><div class="lamp"></div><b>Fastlane</b><i>1:44</i></div>
+      <div class="off"><div class="lamp"></div><b>Upload</b><i>next</i></div>
+    </div>
+    <div class="pad meta" style="margin-top:16px"><span class="mono" style="color:var(--ink)">a3f9c21</span> Fix map tile cache on cold start · maja.k on main</div>
+
+    <h3 class="sec">Needs a look</h3>
+    <div class="row">
+      <span class="mk f"></span>
+      <div class="body"><div class="t" data-proper>Pocket Ledger for Android</div><div class="s">preview · failed in Run gradlew after 4:31</div>
+        <div class="err mono">resource color/brand_ink not found</div></div>
+      <span class="r">22 min</span>
+    </div>
+    <h3 class="sec">Also running</h3>
+    <div class="row">
+      <span class="mk q"></span>
+      <div class="body"><div class="t" data-proper>Trailhead for Android</div><div class="s">production · 2nd in queue · about 3 min</div></div>
+      <span class="r">now</span>
+    </div>
+    <div class="row">
+      <span class="mk l"></span>
+      <div class="body"><div class="t">deploy-production #142</div><div class="s">Workflow · 3 of 5 jobs</div></div>
+      <span class="r">9 min</span>
+    </div>
+  </div>
+  <div class="atb">
+    <div class="achip"><span class="av">L</span>lumen-labs<span class="ms" style="font-size:20px">arrow_drop_down</span></div>
+    <div class="sp"></div>
+    <div class="ib"><span class="ms">refresh</span></div>
+  </div>
+  <div class="navslot" data-on="0"></div>
+</section>
+
+<!-- ============================================================
+     2. NOW — light mode
+     ============================================================ -->
+<section class="screen" data-name="now-light" data-kind="core" data-pair="light" data-time="14:07">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow live"><span class="dot"></span>Building now · step 5 of 6</div></div>
+    <div class="pad" style="margin-top:6px">
+      <div class="clock">6:12<small>/ ~11 min</small></div>
+      <div class="head" style="margin-top:10px" data-proper>Trailhead for iOS</div>
+      <div class="meta" style="font-size:15px;line-height:20px;margin-top:2px">production · 2.4.0 (318) · runtime 2.4.0</div>
+    </div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:41</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:58</i></div>
+      <div><div class="lamp"></div><b>Prebuild</b><i>0:37</i></div>
+      <div><div class="lamp"></div><b>Pods</b><i>1:12</i></div>
+      <div class="live"><div class="lamp"></div><b>Fastlane</b><i>1:44</i></div>
+      <div class="off"><div class="lamp"></div><b>Upload</b><i>next</i></div>
+    </div>
+    <div class="pad meta" style="margin-top:16px"><span class="mono" style="color:var(--ink)">a3f9c21</span> Fix map tile cache on cold start · maja.k on main</div>
+    <h3 class="sec">Needs a look</h3>
+    <div class="row">
+      <span class="mk f"></span>
+      <div class="body"><div class="t" data-proper>Pocket Ledger for Android</div><div class="s">preview · failed in Run gradlew after 4:31</div>
+        <div class="err">resource color/brand_ink not found</div></div>
+      <span class="r">22 min</span>
+    </div>
+    <h3 class="sec">Also running</h3>
+    <div class="row">
+      <span class="mk q"></span>
+      <div class="body"><div class="t" data-proper>Trailhead for Android</div><div class="s">production · 2nd in queue · about 3 min</div></div>
+      <span class="r">now</span>
+    </div>
+    <div class="row">
+      <span class="mk l"></span>
+      <div class="body"><div class="t">deploy-production #142</div><div class="s">Workflow · 3 of 5 jobs</div></div>
+      <span class="r">9 min</span>
+    </div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb">
+    <div class="gp glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div>
+    <div class="sp"></div>
+    <div class="gc glass"><svg class="i" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0113.7-5.6L20 8.7M20 4v4.7h-4.7"/><path d="M20 12a8 8 0 01-13.7 5.6L4 15.3M4 20v-4.7h4.7"/></svg></div>
+  </div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<section class="screen" data-name="now-light-android" data-os="android" data-kind="core" data-pair="light" data-time="14:07">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow live" style="font-family:var(--gsf);font-size:14px"><span class="dot"></span>Building now · step 5 of 6</div></div>
+    <div class="pad" style="margin-top:6px">
+      <div class="clock">6:12<small>/ ~11 min</small></div>
+      <div class="head" style="margin-top:10px" data-proper>Trailhead for iOS</div>
+      <div class="meta" style="margin-top:2px">production · 2.4.0 (318) · runtime 2.4.0</div>
+    </div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:41</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:58</i></div>
+      <div><div class="lamp"></div><b>Prebuild</b><i>0:37</i></div>
+      <div><div class="lamp"></div><b>Pods</b><i>1:12</i></div>
+      <div class="live"><div class="lamp"></div><b>Fastlane</b><i>1:44</i></div>
+      <div class="off"><div class="lamp"></div><b>Upload</b><i>next</i></div>
+    </div>
+    <div class="pad meta" style="margin-top:16px"><span class="mono" style="color:var(--ink)">a3f9c21</span> Fix map tile cache on cold start · maja.k on main</div>
+    <h3 class="sec">Needs a look</h3>
+    <div class="row">
+      <span class="mk f"></span>
+      <div class="body"><div class="t" data-proper>Pocket Ledger for Android</div><div class="s">preview · failed in Run gradlew after 4:31</div>
+        <div class="err mono">resource color/brand_ink not found</div></div>
+      <span class="r">22 min</span>
+    </div>
+    <h3 class="sec">Also running</h3>
+    <div class="row">
+      <span class="mk q"></span>
+      <div class="body"><div class="t" data-proper>Trailhead for Android</div><div class="s">production · 2nd in queue · about 3 min</div></div>
+      <span class="r">now</span>
+    </div>
+  </div>
+  <div class="atb">
+    <div class="achip"><span class="av">L</span>lumen-labs<span class="ms" style="font-size:20px">arrow_drop_down</span></div>
+    <div class="sp"></div>
+    <div class="ib"><span class="ms">refresh</span></div>
+  </div>
+  <div class="navslot" data-on="0"></div>
+</section>
+
+<!-- ============================================================
+     3. BUILD DETAIL — failed (iOS)
+     ============================================================ -->
+<section class="screen" data-name="build-failed" data-theme="dark" data-kind="detail" data-pair="detail" data-time="14:08">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow alarm"><span class="dot alarm"></span>Failed in Run gradlew after 4:31</div></div>
+    <div class="title" style="margin-top:6px" data-proper>Pocket Ledger</div>
+    <div class="pad meta" style="font-size:15px;line-height:20px">Android · preview · 1.9.2 (77) · internal</div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:52</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:12</i></div>
+      <div><div class="lamp"></div><b>Prebuild</b><i>0:31</i></div>
+      <div class="fail"><div class="lamp"></div><b>Gradlew</b><i>2:48</i></div>
+      <div class="off"><div class="lamp"></div><b>Upload</b><i>not run</i></div>
+    </div>
+    <div class="pad" style="margin-top:20px">
+      <div class="codebox"><span class="k">AAPT: error:</span> resource color/brand_ink not found.<br><span style="color:var(--ink-2)">Execution failed for task ':app:mergeReleaseResources'</span></div>
+    </div>
+    <div class="pad btns" style="margin-top:14px">
+      <span class="btn pri" style="flex:1">Open log at error</span>
+      <span class="btn sec">Retry build</span>
+    </div>
+
+    <h3 class="sec">Source</h3>
+    <div class="row"><div class="body"><div class="t" data-ugc>Rename brand colours</div><div class="s"><span class="mono">7d01be4</span> · feat/theme · teo.r</div></div></div>
+    <h3 class="sec drop-small">Build</h3>
+    <div class="row drop-small"><div class="body"><div class="t">Runtime 1.9.0</div><div class="s">Waited 0:52 in queue · started today, 13:41</div></div></div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb">
+    <div class="gc glass"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></div>
+    <div class="sp"></div>
+    <div class="gp glass icons"><span><svg class="i" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M7 11H5.5v9h13v-9H17"/></svg></span><span><svg class="i" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></svg></span></div>
+  </div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<section class="screen" data-name="build-failed-android" data-os="android" data-theme="dark" data-kind="detail" data-pair="detail" data-time="14:08">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow alarm" style="font-family:var(--gsf);font-size:14px"><span class="dot alarm"></span>Failed in Run gradlew after 4:31</div></div>
+    <div class="title" style="margin-top:6px" data-proper>Pocket Ledger</div>
+    <div class="pad meta">Android · preview · 1.9.2 (77) · internal</div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:52</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:12</i></div>
+      <div><div class="lamp"></div><b>Prebuild</b><i>0:31</i></div>
+      <div class="fail"><div class="lamp"></div><b>Gradlew</b><i>2:48</i></div>
+      <div class="off"><div class="lamp"></div><b>Upload</b><i>not run</i></div>
+    </div>
+    <div class="pad" style="margin-top:20px">
+      <div class="codebox mono"><span class="k">AAPT: error:</span> resource color/brand_ink not found.<br><span style="color:var(--ink-2)">Execution failed for task ':app:mergeReleaseResources'</span></div>
+    </div>
+    <div class="pad btns" style="margin-top:14px"><span class="btn sec sm">Retry build</span></div>
+    <h3 class="sec">Source</h3>
+    <div class="row"><div class="body"><div class="t" data-ugc>Rename brand colours</div><div class="s"><span class="mono">7d01be4</span> · feat/theme · teo.r</div></div></div>
+    <h3 class="sec">Build</h3>
+    <div class="row"><div class="body"><div class="t">Runtime 1.9.0</div><div class="s">Waited 0:52 in queue · started today, 13:41</div></div></div>
+  </div>
+  <div class="atb">
+    <div class="ib"><span class="ms">arrow_back</span></div>
+    <div class="sp"></div>
+    <div class="ib"><span class="ms">share</span></div>
+    <div class="ib"><span class="ms">more_vert</span></div>
+  </div>
+  <div class="efab"><span class="ms">subject</span>Open log at error</div>
+  <div class="navslot" data-on="0"></div>
+</section>
+
+<!-- ============================================================
+     4. LOGS (iOS)
+     ============================================================ -->
+<section class="screen" data-name="logs" data-theme="dark" data-kind="detail" data-dense data-time="14:09">
+  <div class="scroll" data-scrolls style="padding-top:116px">
+    <div data-scrolls class="chips" style="margin-bottom:14px">
+      <span class="chip">Install 1:12</span><span class="chip">Prebuild 0:31</span>
+      <span class="chip on" style="background:var(--alarm);color:#1A0704">Run gradlew 2:48</span>
+      <span class="chip">Upload</span>
+    </div>
+    <div class="log" data-scrolls>
+      <div class="ln"><span class="n">412</span><span class="x">&gt; Task :app:generateReleaseResValues</span></div>
+      <div class="ln"><span class="n">413</span><span class="x">&gt; Task :app:generateReleaseResources</span></div>
+      <div class="ln"><span class="n">414</span><span class="x">&gt; Task :app:packageReleaseResources</span></div>
+      <div class="ln"><span class="n">415</span><span class="x">&gt; Task :expo-modules-core:compileKotlin</span></div>
+      <div class="ln"><span class="n">416</span><span class="x">w: Parameter 'context' is never used</span></div>
+      <div class="ln"><span class="n">417</span><span class="x">&gt; Task :app:mergeReleaseResources FAILED</span></div>
+      <div class="ln e"><span class="n">418</span><span class="x">ERROR: res/values/styles.xml:14:</span></div>
+      <div class="ln e"><span class="n">419</span><span class="x">AAPT: error: resource color/<mark>brand_ink</mark></span></div>
+      <div class="ln e"><span class="n">420</span><span class="x">  not found.</span></div>
+      <div class="ln"><span class="n">421</span><span class="x"></span></div>
+      <div class="ln"><span class="n">422</span><span class="x">FAILURE: Build failed with an exception.</span></div>
+      <div class="ln"><span class="n">423</span><span class="x">* What went wrong:</span></div>
+      <div class="ln e"><span class="n">424</span><span class="x">Execution failed for task</span></div>
+      <div class="ln e"><span class="n">425</span><span class="x">  ':app:mergeReleaseResources'.</span></div>
+      <div class="ln"><span class="n">426</span><span class="x">&gt; A failure occurred while executing</span></div>
+      <div class="ln"><span class="n">427</span><span class="x">  com.android.build.gradle.internal</span></div>
+      <div class="ln"><span class="n">428</span><span class="x">  .res.ResourceCompilerRunnable</span></div>
+      <div class="ln"><span class="n">429</span><span class="x"></span></div>
+      <div class="ln"><span class="n">430</span><span class="x">* Try:</span></div>
+      <div class="ln"><span class="n">431</span><span class="x">&gt; Run with --stacktrace option to get</span></div>
+      <div class="ln"><span class="n">432</span><span class="x">  the stack trace.</span></div>
+      <div class="ln"><span class="n">433</span><span class="x"></span></div>
+      <div class="ln"><span class="n">434</span><span class="x">BUILD FAILED in 2m 48s</span></div>
+      <div class="ln"><span class="n">435</span><span class="x">312 actionable tasks: 312 executed</span></div>
+      <div class="ln"><span class="n">436</span><span class="x">Error: Gradle build failed with unknown</span></div>
+      <div class="ln"><span class="n">437</span><span class="x">  error. See logs for the "Run gradlew"</span></div>
+      <div class="ln"><span class="n">438</span><span class="x">  phase for more information.</span></div>
+    </div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb">
+    <div class="gc glass"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></div>
+    <div class="tb-title">Build log</div>
+    <div class="sp"></div>
+    <div class="gp glass icons"><span><svg class="i" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0013.5 4h-7A2.5 2.5 0 004 6.5v7A2.5 2.5 0 006.5 16H8"/></svg></span><span><svg class="i" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M7 11H5.5v9h13v-9H17"/></svg></span></div>
+  </div>
+  <!-- bottom: search bar with match stepper (replaces the tab bar while searching) -->
+  <div class="glass" data-float style="position:absolute;left:16px;right:16px;bottom:21px;height:52px;border-radius:26px;display:flex;align-items:center;gap:8px;padding:0 6px 0 16px;z-index:6">
+    <svg class="i s" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>
+    <span class="mono" style="font-size:15px">brand_ink</span>
+    <span style="margin-left:auto;font:400 15px/1 var(--sf);color:var(--ink-2)">1 of 3</span>
+    <span class="gc" style="width:40px;height:40px"><svg class="i s" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></span>
+    <span class="gc" style="width:40px;height:40px"><svg class="i s" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+  </div>
+</section>
+
+<!-- ============================================================
+     5. SIGNATURE — the approach-light sweep, on Now
+     ============================================================ -->
+<section class="screen" data-name="signature-1" data-theme="dark" data-kind="state" data-time="14:12">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow live"><span class="dot"></span>Building now · step 6 of 6</div></div>
+    <div class="pad" style="margin-top:6px">
+      <div class="clock">10:48<small>/ ~11 min</small></div>
+      <div class="head" style="margin-top:10px" data-proper>Trailhead for iOS</div>
+      <div class="meta" style="font-size:15px;line-height:20px;margin-top:2px">production · 2.4.0 (318) · runtime 2.4.0</div>
+    </div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:41</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:58</i></div>
+      <div><div class="lamp"></div><b>Prebuild</b><i>0:37</i></div>
+      <div><div class="lamp"></div><b>Pods</b><i>1:12</i></div>
+      <div><div class="lamp"></div><b>Fastlane</b><i>5:43</i></div>
+      <div class="live"><div class="lamp"></div><b>Upload</b><i>0:37</i></div>
+    </div>
+    <div class="pad meta" style="margin-top:16px"><span class="mono" style="color:var(--ink)">a3f9c21</span> Fix map tile cache on cold start · maja.k on main</div>
+    <h3 class="sec">Needs a look</h3>
+    <div class="row">
+      <span class="mk f"></span>
+      <div class="body"><div class="t" data-proper>Pocket Ledger for Android</div><div class="s">preview · failed in Run gradlew after 4:31</div></div>
+      <span class="r">27 min</span>
+    </div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb"><div class="gp glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div></div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<section class="screen" data-name="signature-2" data-theme="dark" data-kind="state" data-time="14:12">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow" style="color:var(--ink)"><span class="dot" style="background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.18)"></span>Finished · 14:12</div></div>
+    <div class="pad" style="margin-top:6px">
+      <div class="clock">10:52<small>total</small></div>
+      <div class="head" style="margin-top:10px" data-proper>Trailhead for iOS</div>
+      <div class="meta" style="font-size:15px;line-height:20px;margin-top:2px">production · 2.4.0 (318) · store build</div>
+    </div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:41</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:58</i></div>
+      <div class="flash"><div class="lamp"></div><b>Prebuild</b><i>0:37</i></div>
+      <div class="flash"><div class="lamp"></div><b>Pods</b><i>1:12</i></div>
+      <div class="flash"><div class="lamp"></div><b>Fastlane</b><i>5:43</i></div>
+      <div class="flash"><div class="lamp"></div><b>Upload</b><i>0:41</i></div>
+    </div>
+    <div class="pad btns" style="margin-top:22px">
+      <span class="btn pri" style="flex:1">Submit to App Store</span>
+      <span class="btn sec">Details</span>
+    </div>
+    <div class="pad meta" style="margin-top:10px">Uses the App Store Connect key saved on Expo. Review status lives in App Store Connect.</div>
+    <h3 class="sec">Needs a look</h3>
+    <div class="row">
+      <span class="mk f"></span>
+      <div class="body"><div class="t" data-proper>Pocket Ledger for Android</div><div class="s">preview · failed in Run gradlew after 4:31</div></div>
+      <span class="r">27 min</span>
+    </div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb"><div class="gp glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div></div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<section class="screen" data-name="signature-3" data-theme="dark" data-kind="state" data-time="13:45">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow alarm"><span class="dot alarm"></span>Failed in Run gradlew · 13:45</div></div>
+    <div class="pad" style="margin-top:6px">
+      <div class="clock" style="color:var(--alarm-ink)">4:31</div>
+      <div class="head" style="margin-top:10px" data-proper>Pocket Ledger for Android</div>
+      <div class="meta" style="font-size:15px;line-height:20px;margin-top:2px">preview · 1.9.2 (77) · teo.r on feat/theme</div>
+    </div>
+    <div class="lamps pad" style="margin-top:20px">
+      <div><div class="lamp"></div><b>Queue</b><i>0:52</i></div>
+      <div><div class="lamp"></div><b>Install</b><i>1:12</i></div>
+      <div><div class="lamp"></div><b>Prebuild</b><i>0:31</i></div>
+      <div class="fail"><div class="lamp"></div><b>Gradlew</b><i>2:48</i></div>
+      <div class="off"><div class="lamp"></div><b>Upload</b><i>not run</i></div>
+    </div>
+    <div class="pad" style="margin-top:20px"><div class="codebox"><span class="k">AAPT: error:</span> resource color/brand_ink not found.</div></div>
+    <div class="pad btns" style="margin-top:14px"><span class="btn pri" style="flex:1">Open log at error</span><span class="btn sec">Retry build</span></div>
+    <h3 class="sec">Also running</h3>
+    <div class="row"><span class="mk l"></span><div class="body"><div class="t" data-proper>Trailhead for iOS</div><div class="s">production · building, step 4 of 6</div></div><span class="r">now</span></div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb"><div class="gp glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div></div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<section class="screen" data-name="project-android" data-os="android" data-theme="dark" data-kind="detail" data-pair="project" data-time="14:10">
+  <div class="scroll" data-scrolls>
+    <div class="pad" style="display:flex;gap:14px;align-items:center">
+      <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(180deg,#24272D,#15171B);box-shadow:inset 0 0 0 1px var(--rule);display:flex;align-items:center;justify-content:center;gap:3px;padding:0 12px;box-sizing:border-box">
+        <i style="flex:1;height:14px;border-radius:3px;background:var(--lamp-done)"></i><i style="flex:1;height:14px;border-radius:3px;background:var(--lamp-done)"></i><i style="flex:1;height:14px;border-radius:3px;background:var(--live)"></i>
+      </div>
+      <div><div class="title" style="padding:0" data-proper>Trailhead</div><div class="meta">@lumen-labs/trailhead · SDK 58</div></div>
+    </div>
+    <div class="pad" style="margin-top:28px">
+      <div class="eyebrow live"><span class="dot"></span>Rolling out on production</div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-top:4px"><span class="display">25%</span><span class="meta">on hotfix-offline-banner</span></div>
+      <div class="split" style="margin-top:12px">
+        <div style="flex:75;background:var(--lamp-done);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)"></div>
+        <div style="flex:25;background:linear-gradient(180deg,#FFCB70,var(--live));box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 18px -8px rgba(255,178,56,.7)"></div>
+      </div>
+      <div class="meta" style="margin-top:8px">75% stays on production · since 13:29</div>
+    </div>
+    <div style="margin-top:20px">
+      <div class="row" style="align-items:center"><span class="ms" style="color:var(--ink-2)">deployed_code</span><div class="body"><div class="t">Builds</div><div class="s" style="color:var(--live-ink)">1 building · 1 queued</div></div></div>
+      <div class="row" style="align-items:center"><span class="ms" style="color:var(--ink-2)">upload</span><div class="body"><div class="t">Submissions</div><div class="s">iOS 2.3.9 uploaded 2 days ago</div></div></div>
+      <div class="row" style="align-items:center"><span class="ms" style="color:var(--ink-2)">bolt</span><div class="body"><div class="t">Updates</div><div class="s">Hotfix: offline banner copy · 38 min ago</div></div></div>
+      <div class="row" style="align-items:center"><span class="ms" style="color:var(--ink-2)">alt_route</span><div class="body"><div class="t">Channels and branches</div><div class="s">3 channels · 6 branches · 1 rolling out</div></div></div>
+      <div class="row" style="align-items:center"><span class="ms" style="color:var(--ink-2)">account_tree</span><div class="body"><div class="t">Workflows</div><div class="s" style="color:var(--live-ink)">deploy-production #142 running</div></div></div>
+      <div class="row" style="align-items:center"><span class="ms" style="color:var(--ink-2)">key</span><div class="body"><div class="t">Environment variables</div><div class="s">14 names · values stay on Expo</div></div></div>
+      <div class="row drop-small" style="align-items:center"><span class="ms" style="color:var(--ink-2)">smartphone</span><div class="body"><div class="t">Devices</div><div class="s">9 iPhones registered</div></div></div>
+    </div>
+  </div>
+  <div class="atb">
+    <div class="ib"><span class="ms">arrow_back</span></div>
+    <div class="sp"></div>
+    <div class="ib" style="color:var(--live)"><span class="ms filled">star</span></div>
+    <div class="ib"><span class="ms">open_in_new</span></div>
+  </div>
+  <div class="navslot" data-on="1"></div>
+</section>
+
+<!-- ============================================================
+     6. BUILDS LIST (iOS + Android)
+     ============================================================ -->
+<section class="screen" data-name="builds" data-theme="dark" data-kind="list" data-pair="list" data-time="14:08">
+  <div class="scroll" data-scrolls>
+    <div class="title">Builds</div>
+    <div data-scrolls class="chips" style="margin-top:14px">
+      <span class="chip">All projects<svg class="i" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></span>
+      <span class="chip on">Android</span>
+      <span class="chip">Status<svg class="i" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></span>
+      <span class="chip">Profile<svg class="i" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></span>
+    </div>
+    <h3 class="sec" style="margin-top:28px">Today</h3>
+    <div class="row"><span class="mk q"></span><div class="body"><div class="t" data-proper>Trailhead</div><div class="s">production · 2.4.0 (318) · 2nd in queue</div></div>
+      <div class="r">now<div class="ml"><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i></div></div></div>
+    <div class="row"><span class="mk f"></span><div class="body"><div class="t" data-proper>Pocket Ledger</div><div class="s">preview · 1.9.2 (77) · failed after 4:31</div></div>
+      <div class="r">22 min<div class="ml"><i></i><i></i><i></i><i class="f"></i><i class="o"></i></div></div></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-proper>Pocket Ledger</div><div class="s">development · 1.9.2 (76) · finished in 8:14</div></div>
+      <div class="r">2 h<div class="ml"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-proper>Trailhead</div><div class="s">preview · 2.4.0 (317) · finished in 9:02</div></div>
+      <div class="r">4 h<div class="ml"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+    <h3 class="sec">Yesterday</h3>
+    <div class="row"><span class="mk c"></span><div class="body"><div class="t" data-proper>Fieldnote</div><div class="s">preview · 0.8.0 (12) · canceled by teo.r</div></div>
+      <div class="r">17:20<div class="ml"><i></i><i></i><i class="o"></i><i class="o"></i><i class="o"></i></div></div></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-proper>Trailhead</div><div class="s">production · 2.3.9 (311) · finished in 9:47</div></div>
+      <div class="r">11:05<div class="ml"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-proper>Sprout Kiosk</div><div class="s">development · 3.1.0 (40) · finished in 6:30</div></div>
+      <div class="r">09:12<div class="ml"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb"><div class="gc glass"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></div></div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<section class="screen" data-name="builds-android" data-os="android" data-theme="dark" data-kind="list" data-pair="list" data-time="14:08">
+  <div class="scroll" data-scrolls>
+    <div class="title">Builds</div>
+    <div data-scrolls class="mchips" style="margin-top:14px">
+      <span class="mchip">All projects<span class="ms" style="font-size:18px">arrow_drop_down</span></span>
+      <span class="mchip on"><span class="ms" style="font-size:18px">check</span>Android</span>
+      <span class="mchip">Status<span class="ms" style="font-size:18px">arrow_drop_down</span></span>
+      <span class="mchip">Profile<span class="ms" style="font-size:18px">arrow_drop_down</span></span>
+    </div>
+    <h3 class="sec">Today</h3>
+    <div class="row"><span class="mk q"></span><div class="body"><div class="t" data-proper>Trailhead</div><div class="s">production · 2.4.0 (318) · 2nd in queue</div></div>
+      <div class="r">now<div class="ml"><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i></div></div></div>
+    <div class="row"><span class="mk f"></span><div class="body"><div class="t" data-proper>Pocket Ledger</div><div class="s">preview · 1.9.2 (77) · failed after 4:31</div></div>
+      <div class="r">22 min<div class="ml"><i></i><i></i><i></i><i class="f"></i><i class="o"></i></div></div></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-proper>Pocket Ledger</div><div class="s">development · 1.9.2 (76) · finished in 8:14</div></div>
+      <div class="r">2 h<div class="ml"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-proper>Trailhead</div><div class="s">preview · 2.4.0 (317) · finished in 9:02</div></div>
+      <div class="r">4 h<div class="ml"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+    <h3 class="sec">Yesterday</h3>
+    <div class="row"><span class="mk c"></span><div class="body"><div class="t" data-proper>Fieldnote</div><div class="s">preview · 0.8.0 (12) · canceled by teo.r</div></div>
+      <div class="r">17:20<div class="ml"><i></i><i></i><i class="o"></i><i class="o"></i><i class="o"></i></div></div></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-proper>Trailhead</div><div class="s">production · 2.3.9 (311) · finished in 9:47</div></div>
+      <div class="r">11:05<div class="ml"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+  </div>
+  <div class="atb">
+    <div class="ib"><span class="ms">arrow_back</span></div>
+    <div class="sp"></div>
+    <div class="ib"><span class="ms">search</span></div>
+  </div>
+  <div class="navslot" data-on="0"></div>
+</section>
+
+<!-- ============================================================
+     7. PROJECT HUB (iOS)
+     ============================================================ -->
+<section class="screen" data-name="project" data-theme="dark" data-kind="detail" data-pair="project" data-time="14:10">
+  <div class="scroll" data-scrolls>
+    <div class="pad" style="display:flex;gap:14px;align-items:center">
+      <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(180deg,#24272D,#15171B);box-shadow:inset 0 0 0 1px var(--rule);display:flex;align-items:center;justify-content:center;gap:3px;padding:0 12px;box-sizing:border-box">
+        <i style="flex:1;height:14px;border-radius:3px;background:var(--lamp-done)"></i><i style="flex:1;height:14px;border-radius:3px;background:var(--lamp-done)"></i><i style="flex:1;height:14px;border-radius:3px;background:var(--live)"></i>
+      </div>
+      <div><div class="title" style="padding:0" data-proper>Trailhead</div><div class="meta">@lumen-labs/trailhead · SDK 58</div></div>
+    </div>
+
+    <div class="pad" style="margin-top:32px">
+      <div class="eyebrow live"><span class="dot"></span>Rolling out on production</div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-top:4px"><span class="display">25%</span><span class="meta" style="font-size:15px">on hotfix-offline-banner</span></div>
+      <div class="split" style="margin-top:12px">
+        <div style="flex:75;background:var(--lamp-done);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)"></div>
+        <div style="flex:25;background:linear-gradient(180deg,#FFCB70,var(--live));box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 18px -8px rgba(255,178,56,.7)"></div>
+      </div>
+      <div class="meta" style="margin-top:8px">75% stays on production · since 13:29</div>
+    </div>
+
+    <div class="group" style="margin-top:28px">
+      <div class="row"><span class="t">Builds</span><span class="v live">1 building<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Submissions</span><span class="v">2 days ago<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Updates</span><span class="v">38 min ago<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Channels</span><span class="v live">1 rolling out<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Branches</span><span class="v">6<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Workflows</span><span class="v live">1 running<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+    </div>
+    <div class="group" style="margin-top:20px">
+      <div class="row"><span class="t">Environment variables</span><span class="v">14<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Devices</span><span class="v">9 iPhones<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Hosting</span><span class="v">Not set up<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+    </div>
+    <div class="group drop-small" style="margin-top:20px">
+      <div class="row"><span class="t">Open in Expo</span><span class="v"><svg class="i s" viewBox="0 0 24 24"><path d="M9 5h10v10M19 5L6 18"/></svg></span></div>
+    </div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb">
+    <div class="gc glass"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></div>
+    <div class="sp"></div>
+    <div class="gc glass" style="color:var(--live)"><svg class="i" viewBox="0 0 24 24" style="fill:currentColor"><path d="M12 3.8l2.5 5.1 5.6.8-4 4 .9 5.6-5-2.7-5 2.7.9-5.6-4-4 5.6-.8z"/></svg></div>
+  </div>
+  <div class="tabslot" data-on="1"></div>
+</section>
+
+<!-- ============================================================
+     8. CHANNELS + rollout confirmation sheet (iOS)
+     ============================================================ -->
+<section class="screen" data-name="channels" data-theme="dark" data-kind="detail" data-time="14:11">
+  <div class="scroll" data-scrolls>
+    <div class="title">Channels</div>
+    <div class="pad meta" style="font-size:15px;line-height:20px" data-proper>Trailhead · each channel and the branch it serves</div>
+
+    <div class="pad" style="margin-top:32px">
+      <div class="head">production</div>
+      <div class="split" style="margin-top:12px">
+        <div style="flex:75;background:var(--lamp-done)"></div>
+        <div style="flex:25;background:linear-gradient(180deg,#FFCB70,var(--live))"></div>
+      </div>
+      <div class="row" style="padding:14px 0 6px"><span class="mk"></span><div class="body"><div class="t">production <span class="meta">75%</span></div><div class="s" data-ugc>Map tiles load offline · 2 days ago</div></div></div>
+      <div class="row" style="padding:10px 0"><span class="mk l"></span><div class="body"><div class="t">hotfix-offline-banner <span class="meta" style="color:var(--live-ink)">25% · rolling out</span></div><div class="s" data-ugc>Hotfix: offline banner copy · 38 min ago</div></div></div>
+      <div class="btns" style="margin-top:10px"><span class="btn sec sm">Change rollout</span><span class="btn sec sm">Finish rollout</span></div>
+    </div>
+
+    <div class="pad" style="margin-top:40px">
+      <div class="head">preview</div>
+      <div class="split" style="margin-top:12px"><div style="flex:1;background:var(--lamp-done)"></div></div>
+      <div class="row" style="padding:14px 0 6px"><span class="mk"></span><div class="body"><div class="t">preview <span class="meta">100%</span></div><div class="s" data-ugc>Trail difficulty filter · 4 h ago</div></div></div>
+    </div>
+    <div class="pad drop-small" style="margin-top:32px">
+      <div class="head">development</div>
+      <div class="split" style="margin-top:12px"><div style="flex:1;background:var(--lamp-done)"></div></div>
+      <div class="row" style="padding:14px 0 6px"><span class="mk"></span><div class="body"><div class="t">main <span class="meta">100%</span></div><div class="s" data-ugc>Fix map tile cache on cold start · 1 h ago</div></div></div>
+    </div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb">
+    <div class="gc glass"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></div>
+    <div class="sp"></div>
+    <div class="gc glass"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+  </div>
+  <div class="tabslot" data-on="1"></div>
+</section>
+
+<section class="screen" data-name="rollout-confirm" data-theme="dark" data-kind="state" data-time="14:11">
+  <div data-behind style="position:absolute;inset:0">
+    <div class="scroll"><div class="title">Channels</div>
+      <div class="pad" style="margin-top:32px"><div class="head">production</div>
+        <div class="split" style="margin-top:12px"><div style="flex:75;background:var(--lamp-done)"></div><div style="flex:25;background:var(--live)"></div></div></div></div>
+  </div>
+  <div class="dim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div class="head" style="font-size:28px;line-height:34px;letter-spacing:-0.6px">Raise the rollout to 50%?</div>
+    <div class="meta" style="font-size:15px;line-height:20px;margin-top:8px">About half of production installs on runtime 2.4.0 get this update the next time they launch.</div>
+    <div class="display" style="margin-top:18px">25% <span style="color:var(--ink-3)">→</span> 50%</div>
+    <div class="split" style="margin-top:14px">
+      <div style="flex:50;background:var(--lamp-done)"></div>
+      <div style="flex:25;background:repeating-linear-gradient(135deg,rgba(255,178,56,.55) 0 6px,rgba(255,178,56,.3) 6px 12px)"></div>
+      <div style="flex:25;background:linear-gradient(180deg,#FFCB70,var(--live))"></div>
+    </div>
+    <div class="seg" style="margin-top:14px"><span>10%</span><span>25%</span><span class="on">50%</span><span>75%</span><span>100%</span></div>
+    <dl class="scope" style="margin:18px 0 0">
+      <dt>Account</dt><dd>lumen-labs</dd>
+      <dt>Project</dt><dd data-proper>Trailhead</dd>
+      <dt>Channel</dt><dd>production</dd>
+      <dt>Branch</dt><dd>hotfix-offline-banner</dd>
+    </dl>
+    <div class="btns" style="margin-top:20px;flex-direction:column">
+      <span class="btn pri" data-cta>Roll out to 50%</span>
+      <span class="btn" style="color:var(--ink-2)">Keep it at 25%</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     9. ACCOUNT SWITCHER (sheet)
+     ============================================================ -->
+<section class="screen" data-name="accounts" data-theme="dark" data-kind="state" data-time="14:07">
+  <div data-behind style="position:absolute;inset:0">
+    <div class="scroll"><div class="pad"><div class="clock">6:12</div></div></div>
+  </div>
+  <div class="dim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div class="head" style="font-size:28px;line-height:34px;letter-spacing:-0.6px">Accounts</div>
+    <div class="meta" style="font-size:15px;line-height:20px;margin-top:6px">From your token for maja.k</div>
+    <div style="margin:18px -20px 0">
+      <div class="row" style="align-items:center"><span class="av" style="width:40px;height:40px;border-radius:12px">L</span><div class="body"><div class="t">lumen-labs</div><div class="s">Organization · developer · 4 projects</div></div>
+        <svg class="i" viewBox="0 0 24 24" style="color:var(--ink)"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <div class="row" style="align-items:center"><span class="av t2" style="width:40px;height:40px;border-radius:12px">M</span><div class="body"><div class="t">maja.k</div><div class="s">Personal · owner · 2 projects</div></div></div>
+      <div class="row" style="align-items:center"><span class="av t3" style="width:40px;height:40px;border-radius:12px">N</span><div class="body"><div class="t">north-pier</div><div class="s">Organization · viewer · read only</div></div></div>
+    </div>
+    <div class="meta" style="margin-top:14px">Viewer roles can see builds but can't cancel, retry or change rollouts.</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     10. SIGN IN (onboarding) + checking state
+     ============================================================ -->
+<section class="screen" data-name="sign-in" data-theme="dark" data-kind="onboarding" data-time="9:41">
+  <div style="position:absolute;top:120px;left:20px;right:20px">
+    <div class="lamps">
+      <div class="live"><div class="lamp" style="height:44px"></div><b>Paste</b></div>
+      <div class="off"><div class="lamp" style="height:44px"></div><b>Check</b></div>
+      <div class="off"><div class="lamp" style="height:44px"></div><b>Accounts</b></div>
+      <div class="off"><div class="lamp" style="height:44px"></div><b>Save</b></div>
+    </div>
+    <div style="font:800 56px/0.98 var(--sf);font-stretch:60%;letter-spacing:-0.8px;margin-top:36px">Paste an Expo<br>access token</div>
+    <div class="meta" style="font-size:17px;line-height:23px;margin-top:12px">Kiln uses it to read and manage your builds. It stays encrypted on this phone.</div>
+    <div style="height:56px;border-radius:16px;background:var(--raised-2);display:flex;align-items:center;padding:0 8px 0 16px;gap:8px;margin-top:28px">
+      <span class="mono" style="font-size:17px;letter-spacing:2px;color:var(--ink)">••••••••••••••••••••</span>
+      <span class="gc" style="margin-left:auto;color:var(--ink-2)" data-hit-expanded><svg class="i" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;margin-top:14px;font:600 15px/20px var(--sf)">Create one on expo.dev<svg class="i xs" viewBox="0 0 24 24"><path d="M9 5h10v10M19 5L6 18"/></svg></div>
+  </div>
+  <div style="position:absolute;left:20px;right:20px;bottom:54px">
+    <span class="btn pri" data-cta style="width:100%;box-sizing:border-box">Check token</span>
+    <div class="meta" data-legal style="text-align:center;margin-top:14px">Unofficial app. Not made by or affiliated with Expo.</div>
+  </div>
+</section>
+
+<section class="screen" data-name="sign-in-checking" data-theme="dark" data-kind="onboarding" data-time="9:41">
+  <div style="position:absolute;top:120px;left:20px;right:20px">
+    <div class="lamps">
+      <div><div class="lamp" style="height:44px"></div><b>Paste</b></div>
+      <div><div class="lamp" style="height:44px"></div><b>Check</b></div>
+      <div class="live"><div class="lamp" style="height:44px"></div><b>Accounts</b></div>
+      <div class="off"><div class="lamp" style="height:44px"></div><b>Save</b></div>
+    </div>
+    <div style="font:800 56px/0.98 var(--sf);font-stretch:60%;letter-spacing:-0.8px;margin-top:40px">Checking<br>your token</div>
+    <div style="margin-top:28px;display:flex;flex-direction:column;gap:14px;font:400 17px/22px var(--sf)">
+      <div style="display:flex;gap:12px"><span class="mk" style="margin-top:5px"></span>Token accepted for maja.k</div>
+      <div style="display:flex;gap:12px"><span class="mk" style="margin-top:5px"></span>Found 3 accounts</div>
+      <div style="display:flex;gap:12px;color:var(--live-ink)"><span class="mk l" style="margin-top:5px"></span>Loading lumen-labs</div>
+      <div style="display:flex;gap:12px;color:var(--ink-3)"><span class="mk c" style="margin-top:5px"></span>Saving it encrypted</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     11. ACTIVITY (unified feed)
+     ============================================================ -->
+<section class="screen" data-name="activity" data-theme="dark" data-kind="list" data-time="14:08">
+  <div class="scroll" data-scrolls>
+    <div class="title">Activity</div>
+    <div class="pad meta" style="margin-top:4px">Last 7 days across your 4 most active projects</div>
+    <div class="frow" style="margin-top:14px">
+      <span class="fp"><b>Type</b><svg class="i" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></span><span class="fp shrink"><b>Project</b><svg class="i" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></span>
+      <span class="sp"></span>
+      <span class="fi" role="button" aria-label="Platform filter, any"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M3 7.5v9M21 7.5v9"/></svg></span><span class="fi" role="button" aria-label="Status filter, any"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3.3"/></svg></span>
+    </div>
+    <h3 class="sec" style="margin-top:24px">Today</h3>
+    <div class="row"><span class="mk l"></span><div class="body"><div class="t">Build · <span data-proper>Trailhead iOS</span></div><div class="s">production · building, step 5 of 6</div></div><span class="r">14:01</span></div>
+    <div class="row"><span class="mk l"></span><div class="body"><div class="t">Workflow · deploy-production #142</div><div class="s">push to main by maja.k · 3 of 5 jobs</div></div><span class="r">13:58</span></div>
+    <div class="row"><span class="mk f"></span><div class="body"><div class="t">Build · <span data-proper>Pocket Ledger Android</span></div><div class="s">preview · failed in Run gradlew</div></div><span class="r">13:45</span></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t">Update · <span data-proper>Trailhead</span></div><div class="s" data-ugc>Hotfix: offline banner copy · 25% of production</div></div><span class="r">13:29</span></div>
+    <h3 class="sec">Mon 2 Nov</h3>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t">Submission · <span data-proper>Trailhead iOS</span> 2.3.9</div><div class="s">Uploaded to App Store Connect. Apple review isn't tracked here.</div></div><span class="r">11:31</span></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t">Deploy · <span data-proper>Sprout Kiosk</span></div><div class="s">sprout-kiosk.expo.app · production alias</div></div><span class="r">10:02</span></div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb"><div class="gp glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div></div>
+  <div class="tabslot" data-on="2"></div>
+</section>
+<section class="screen" data-name="activity-filtered" data-theme="dark" data-kind="list" data-time="14:09">
+  <div class="scroll" data-scrolls data-behind>
+    <div class="title">Activity</div>
+    <div class="pad meta" style="margin-top:4px">2 of 31 in the last 7 days · <b style="color:var(--ink);font-weight:600">Clear filters</b></div>
+    <div class="frow" style="margin-top:14px">
+      <span class="fp on"><b>Builds</b><svg class="i" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></span><span class="fp shrink"><b>Project</b><svg class="i" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></span>
+      <span class="sp"></span>
+      <span class="fi"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M3 7.5v9M21 7.5v9"/></svg></span><span class="fi alarm"><svg viewBox="0 0 24 24"><path d="M12 3.2 22 20.5H2z"/><path d="M12 9.5v5M12 17v.6" stroke="#1A0704" stroke-width="2.2" stroke-linecap="round"/></svg>Failed</span>
+    </div>
+    <h3 class="sec" style="margin-top:24px">Today</h3>
+    <div class="row"><span class="mk f"></span><div class="body"><div class="t">Build · <span data-proper>Pocket Ledger Android</span></div><div class="s">preview · failed in Run gradlew</div></div><span class="r">13:45</span></div>
+    <h3 class="sec">Sat 31 Oct</h3>
+    <div class="row"><span class="mk f"></span><div class="body"><div class="t">Build · <span data-proper>Trailhead iOS</span></div><div class="s">production · failed in Install pods</div></div><span class="r">17:12</span></div>
+  </div>
+  <div class="scrim" data-float></div>
+  <div class="menu" data-float style="top:262px">
+    <div><span class="ck">✓</span>Failed<span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3.2 22 20.5H2z"/><path d="M12 9.5v5M12 17v.6" stroke="#1A0704" stroke-width="2.2" stroke-linecap="round"/></svg></span></div>
+    <div><span class="ck"></span>Running<span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="var(--live)"/></svg></span></div>
+    <div><span class="ck"></span>Any status<span class="ic fi" style="background:none;min-width:0;height:auto"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3.3"/></svg></span></div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb"><div class="gp glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div></div>
+  <div class="tabslot" data-on="2"></div>
+</section>
+
+<!-- ============================================================
+     12. ACCOUNT / SETTINGS tab
+     ============================================================ -->
+<section class="screen" data-name="settings" data-theme="dark" data-kind="settings" data-time="14:08">
+  <div class="scroll" data-scrolls>
+    <div class="title">Account</div>
+    <div class="pad" style="display:flex;gap:14px;align-items:center;margin-top:16px">
+      <span class="av t2" style="width:56px;height:56px;border-radius:16px;font-size:22px">M</span>
+      <div><div class="head">maja.k</div><div class="meta">Personal token · checked 2 min ago</div></div>
+    </div>
+    <div class="group" style="margin-top:24px">
+      <div class="row"><span class="t">Active account</span><span class="v">lumen-labs<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Test connection</span><span class="v">212 ms</span></div>
+      <div class="row"><span class="t">Replace token</span><span class="v"><svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+    </div>
+    <div class="group" style="margin-top:20px">
+      <div class="row"><span class="t">Appearance</span><span class="v">Dark<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+      <div class="row"><span class="t">Refresh running builds</span><span class="v">Every 15 seconds</span></div>
+      <div class="row"><span class="t">Favorites</span><span class="v">3 projects</span></div>
+      <div class="row"><span class="t">Clear cached data</span><span class="v">1.8 MB</span></div>
+    </div>
+    <div class="group" style="margin-top:20px">
+      <div class="row"><div class="body"><div class="t" style="font-weight:400">Build notifications</div><div class="s">Needs a Kiln server you run. Not set up.</div></div><span class="v">Set up<svg class="i s" viewBox="0 0 24 24" style="color:var(--ink-3)"><path d="M10 6l6 6-6 6"/></svg></span></div>
+    </div>
+    <div class="glabel drop-small" style="margin-top:20px">Kiln 1.0 (1) · unofficial client, not affiliated with Expo</div>
+    <div class="group drop-small">
+      <div class="row"><span class="t" style="color:var(--alarm-ink)">Sign out and delete token</span></div>
+    </div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tabslot" data-on="3"></div>
+</section>
+
+<!-- ============================================================
+     13. EMPTY — nothing running
+     ============================================================ -->
+<section class="screen" data-name="now-empty" data-theme="dark" data-kind="empty" data-time="18:40">
+  <div class="scroll" data-scrolls>
+    <div class="pad"><div class="eyebrow" style="color:var(--ink-2)">Nothing building</div></div>
+    <div class="lamps pad" style="margin-top:14px">
+      <div class="off"><div class="lamp"></div></div><div class="off"><div class="lamp"></div></div><div class="off"><div class="lamp"></div></div>
+      <div class="off"><div class="lamp"></div></div><div class="off"><div class="lamp"></div></div><div class="off"><div class="lamp"></div></div>
+    </div>
+    <div class="pad" style="font:800 56px/0.98 var(--sf);font-stretch:60%;letter-spacing:-0.8px;margin-top:28px">Quiet skies</div>
+    <div class="pad meta" style="font-size:17px;line-height:22px;margin-top:8px">Last build finished 3 h ago.</div>
+    <div class="pad btns" style="margin-top:20px"><span class="btn sec">Run a workflow</span></div>
+    <h3 class="sec">Recent</h3>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-proper>Trailhead for iOS</div><div class="s">production · finished in 10:52</div></div><span class="r">3 h</span></div>
+    <div class="row"><span class="mk"></span><div class="body"><div class="t" data-ugc>Hotfix: offline banner copy</div><div class="s">Update on production · 50% rollout</div></div><span class="r">4 h</span></div>
+    <div class="row"><span class="mk f"></span><div class="body"><div class="t" data-proper>Pocket Ledger for Android</div><div class="s">preview · failed in Run gradlew</div></div><span class="r">5 h</span></div>
+  </div>
+  <div class="fade-top"></div>
+  <div class="tb"><div class="gp glass"><span class="av">L</span>lumen-labs<svg class="i s" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div></div>
+  <div class="tabslot" data-on="0"></div>
+</section>
+
+<!-- ============================================================
+     ICONS
+     ============================================================ -->
+<section class="app-icon" data-name="icon"><div class="mark"><i></i><i></i><i class="l"></i></div></section>
+<section class="adaptive-icon" data-name="icon-android">
+  <div class="layer-bg"></div>
+  <div class="layer-fg"><div class="m"><i></i><i></i><i class="l"></i></div></div>
+  <div class="layer-mono"><div class="m"><i></i><i></i><i class="l"></i></div></div>
+</section>
+
+<!-- ---------- shared chrome ---------- -->
+<template id="tabbar">
+  <div class="tabbar glass" data-system data-float>
+    <div class="tab"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12l4-3"/></svg>Now</div>
+    <div class="tab"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="8" width="13" height="12" rx="3"/><path d="M8 5h9a3 3 0 013 3v9"/></svg>Projects</div>
+    <div class="tab"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h2M4 12h2M4 17h2M10 7h10M10 12h10M10 17h10"/></svg>Activity</div>
+    <div class="tab"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18c1.5-2 3.4-3 5.5-3s4 1 5.5 3"/></svg>Account</div>
+  </div>
+  <div class="searchbtn glass" data-system data-float><svg class="i" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg></div>
+</template>
+<template id="navbar">
+  <div class="anav" data-system data-float>
+    <div class="it"><span class="ind"><span class="ms">speed</span></span>Now</div>
+    <div class="it"><span class="ind"><span class="ms">folder</span></span>Projects</div>
+    <div class="it"><span class="ind"><span class="ms">history</span></span>Activity</div>
+    <div class="it"><span class="ind"><span class="ms">account_circle</span></span>Account</div>
+  </div>
+</template>
+<script>
+  document.querySelectorAll('.tabslot').forEach(slot => {
+    const frag = document.getElementById('tabbar').content.cloneNode(true);
+    frag.querySelectorAll('.tab')[+slot.dataset.on].classList.add('on');
+    slot.replaceWith(frag);
+  });
+  document.querySelectorAll('.navslot').forEach(slot => {
+    const frag = document.getElementById('navbar').content.cloneNode(true);
+    const it = frag.querySelectorAll('.it')[+slot.dataset.on];
+    it.classList.add('on'); it.querySelector('.ms').classList.add('filled');
+    slot.replaceWith(frag);
+  });
+</script>
+<script src="file:///Users/aiken/.claude/skills/app-designer-pro/assets/device.js"></script>
+</body>
+</html>
